@@ -24,13 +24,32 @@ app.use(methodOverride("_method"));
 app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname,"/public")));
 
+//home route
 app.get("/",async (req,res)=>{
     const allProducts=await Products.find({});
     console.log(allProducts);
     res.render("home.ejs",{allProducts});
 })
 
+//view all products
+app.get("/products",(req,res)=>{
 
+})
+
+//prodict details
+app.get("/products/:id",(req,res)=>{
+    let {id} = req.params;
+})
+
+//contact
+app.get("/contact",(req,res)=>{
+
+})
+
+//about us
+app.get("/about",(req,res)=>{
+
+})
 app.listen(8080,(req,res)=>{
     console.log("Listening on port 8080");
 })
