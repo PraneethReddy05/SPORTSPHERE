@@ -1,6 +1,6 @@
 const express=require("express");
-const mongoose=require("mongoose");
 const app=express();
+const mongoose=require("mongoose");
 const ejs=require("ejs");
 const path=require("path");
 const methodOverride =require("method-override");
