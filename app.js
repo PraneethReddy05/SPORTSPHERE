@@ -1,11 +1,11 @@
 const express=require("express");
-const mongoose=require("mongoose");
 const app=express();
+const mongoose=require("mongoose");
 const ejs=require("ejs");
 const path=require("path");
 const methodOverride =require("method-override");
 const ejsMate=require("ejs-mate");
-const Products=require("/Users/abhishekalli/Documents/SPORTSPHERE/models/Products.js");
+const Products=require("./models/Products.js");
 async function main(){
     await mongoose.connect("mongodb://127.0.0.1:27017/SPORTSPHERE")
 }
@@ -27,7 +27,6 @@ app.use(express.static(path.join(__dirname,"/public")));
 //home route
 app.get("/",async (req,res)=>{
     const allProducts=await Products.find({});
-    console.log(allProducts);
     res.render("home.ejs",{allProducts});
 })
 
@@ -37,18 +36,20 @@ app.get("/products",(req,res)=>{
 })
 
 //prodict details
-app.get("/products/:id",(req,res)=>{
+app.get("/products/:id", async (req,res)=>{
     let {id} = req.params;
+    let product = await Products.findById(id);
+    res.render("details.ejs",{product});
 })
 
 //contact
 app.get("/contact",(req,res)=>{
-
+    res.send("Contact page");
 })
 
 //about us
 app.get("/about",(req,res)=>{
-
+    res.send("About us page");
 })
 app.listen(8080,(req,res)=>{
     console.log("Listening on port 8080");

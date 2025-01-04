@@ -1,14 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
+<% layout("/layouts/boilerplate") -%>
 <body>
     <h1>All Products</h1>
-    <% for(let product of allProducts){ %>
-        <li> <%= product.name %>  </li>
-   <% } %>  
+    <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 ms-3">
+        <% for(let product of allProducts){ %>
+            <a href="/products/<%= product._id%>" class="product-link">
+                <div class="card col mb-4" style="width: 18rem;height: 30rem;">
+                    <img src="<%=product.images%>" class="card-img-top" alt="">
+                    <div class="card-body border-top">
+                        <h5 class="card-title">
+                            <%=product.name %>
+                        </h5>
+                        <p class="card-text">
+                            <%= product.description %>
+                        </p>
+                    
+                    </div>
+                </div>
+            </a>
+            <% } %>
+    </div>
 </body>
-</html>
