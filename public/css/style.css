@@ -1,3 +1,27 @@
 .product-link{
     text-decoration:none;
 }
+
+/* NavBar */
+.navbar{
+    background-color: white;
+}
+.navbar-brand{
+    font-size: x-large;
+    font-weight: bold !important;
+}
+.navbar-nav{
+    gap: 1.5rem;
+}
+.nav-link{
+    color: black !important;
+}
+.nav-link:hover{
+    text-decoration: underline !important;
+}
+.search-btn{
+    background-color: #DB4444 !important;
+    color: white !important;
+}
+
+
