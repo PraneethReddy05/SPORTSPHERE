@@ -25,17 +25,17 @@ app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname,"/public")));
 
 //home route
-app.get("/",async (req,res)=>{
+app.get("/home",async (req,res)=>{
+    res.send("home to be implemented")
+})
+
+//view all products
+app.get("/products",async(req,res)=>{
     const allProducts=await Products.find({});
     res.render("home.ejs",{allProducts});
 })
 
-//view all products
-app.get("/products",(req,res)=>{
-
-})
-
-//prodict details
+//product details
 app.get("/products/:id", async (req,res)=>{
     let {id} = req.params;
     let product = await Products.findById(id);
@@ -51,6 +51,28 @@ app.get("/contact",(req,res)=>{
 app.get("/about",(req,res)=>{
     res.send("About us page");
 })
+
+
+//signup //user
+app.get("/signup/user",(req,res)=>{
+    res.render("users/signup.ejs")
+})
+//signup //seller
+app.get("/signup/seller",(req,res)=>{
+    res.render("sellers/signup.ejs")
+})
+
+//login //user
+app.get("/login/user",(req,res)=>{
+    res.render("users/login.ejs")
+})
+//login //seller
+app.get("/login/seller",(req,res)=>{
+    res.render("sellers/login.ejs")
+})
+
+
+
 app.listen(8080,(req,res)=>{
     console.log("Listening on port 8080");
 })
