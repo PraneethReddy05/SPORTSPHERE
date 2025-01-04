@@ -4,7 +4,7 @@ const Products=require("../models/Products.js");
 async function main(){
     await mongoose.connect("mongodb://127.0.0.1:27017/SPORTSPHERE")
 }
-
+ 
 main().then(()=>{
     console.log("Connected to DB");
 }).catch(err=>{
