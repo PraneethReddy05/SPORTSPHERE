@@ -100,6 +100,11 @@ app.get("/login/seller", (req, res) => {
     res.render("sellers/login.ejs")
 })
 
+// cart
+app.get("/cart", (req, res) => {
+    res.send("Cart of the respective user");
+})
+
 app.post("/signup/user", async (req, res) => {
     try {
         // console.log("Signup data: ", req.body);

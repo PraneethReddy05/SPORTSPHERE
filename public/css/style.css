@@ -1,3 +1,15 @@
+/* *{
+    margin: 0 !important;
+} */
+body{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0 !important;
+}
+.container{
+    flex: 1;
+}
 .product-link{
     text-decoration:none;
 }
@@ -23,5 +35,30 @@
     background-color: #DB4444 !important;
     color: white !important;
 }
+.icons{
+    font-size: 1.5rem;  
+    color : black
+}
+.user{
+    color:#DB4444 ;
+}
 
 /* Signup */
+
+/* footer */
+footer{
+    background-color: black;
+    color: white;
+    width: 100vw;
+}
+.footer-link{
+    color: white;
+    text-decoration: none !important;
+    font-weight: 400 !important;
+}
+.fa-brands{
+    font-size: 1.5rem;
+}
+.copyrights{
+    color: rgb(173, 173, 173);
+}

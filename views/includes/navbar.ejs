@@ -1,38 +1,51 @@
 <nav class="navbar navbar-expand-lg pt-4 pb-3 border-bottom sticky-top">
-    <div class="container-fluid">
-      <a class="navbar-brand ms-4" href="/home">SportSphere</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-center" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-          <a class="nav-link" href="/home">Home</a>
-          <a class="nav-link" href="/contact">Contact</a>
-          <a class="nav-link" href="/about">About</a>
-          <!-- <a class="nav-link" href="/signup">Sign Up</a> -->
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Log in
-            </a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="/login/user">User</a></li>
-              <li><a class="dropdown-item" href="/login/seller">Seller</a></li>
-            </ul>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Sign up
-            </a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="/signup/user">User</a></li>
-              <li><a class="dropdown-item" href="/signup/seller">Seller</a></li>
-            </ul>
-          </li>
+    <div class="container-fluid row">
+      <div class="col">
+        <a class="navbar-brand ms-4" href="/home">SportSphere</a>
+      </div>
+      <div class="col-8">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNavAltMarkup">
+          <div class="navbar-nav">
+            <a class="nav-link" href="/home">Home</a>
+            <a class="nav-link" href="/contact">Contact</a>
+            <a class="nav-link" href="/about">About</a>
+            <!-- <a class="nav-link" href="/signup">Sign Up</a> -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Log in
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/login/user">User</a></li>
+                <li><a class="dropdown-item" href="/login/seller">Seller</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Sign up
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/signup/user">User</a></li>
+                <li><a class="dropdown-item" href="/signup/seller">Seller</a></li>
+              </ul>
+            </li>
+          </div>
         </div>
       </div>
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn search-btn" type="submit">Search</button>
-      </form>
+      <div class="col-2">
+        <form class="search d-flex" role="search">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn search-btn" type="submit">Search</button>
+        </form>
+      </div>
+      <div class="col">
+        <div class="d-flex flex-row gap-3">
+          <i class="icons fa-regular fa-heart"></i>
+          <a href="/cart"><i class="icons fa-solid fa-cart-shopping"></i></a>
+          <i class="icons user fa-solid fa-user"></i>
+        </div>
+      </div>
     </div>
   </nav>
