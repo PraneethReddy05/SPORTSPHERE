@@ -35,6 +35,13 @@ body{
     background-color: #DB4444 !important;
     color: white !important;
 }
+.icons{
+    font-size: 1.5rem;  
+    color : black
+}
+.user{
+    color:#DB4444 ;
+}
 
 /* Signup */
 
