@@ -1,6 +1,40 @@
 <% layout("/layouts/boilerplate") -%>
 <body>
-    <h1><%= product.name %></h1>
+    <!-- <h1><%= product.name %></h1>
     <p><%= product._id %></p>
-    <img src="<%= product.images %>" alt="">
+    <img src="<%= product.images %>" alt=""> -->
+    <div class="row mt-5 mb-5 gap-4">
+        <div class="col">
+            <img src="<%= product.images %>" style="height: 40rem;width: 40rem;border: 1px solid black;"  alt="">
+        </div>
+        <div class="col">
+            <h1><%= product.name %></h1>
+            <div class="mt-3">
+                <% if(product.stock > 0){ %>
+                    <p class="text-success fs-4 fw-bold"> In Stock </p>
+                <%}else { %>
+                    <p class="text-danger fs-4 fw-bold"> Out Of Stock </p>
+                <%}%>
+            </div>
+            <p class="price mt-3 fs-3">&#8377;<%= product.price %></p>
+            <p class="discription mt-3 fs-4"><%= product.description %></p> 
+            <div class="row border-top mt-4 pt-4">
+                <div class="col-5 offset-2">
+                    <div class="d-flex flex-column gap-2 ">
+                        <form action="" method="">  
+                            <button class="btn btn-primary fs-5" style="width: 100%;">Buy now</button><br>
+                        </form>
+                        <form action="" method="">  
+                            <button class="btn btn-primary fs-5 d-flex justify-content-center gap-3" style="width: 100%;">
+                                Add to cart
+                                <i class="mt-1 fa-solid fa-cart-shopping"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            // Seller info
+            // reviews etc 
+        </div>
+    </div>
 </body>

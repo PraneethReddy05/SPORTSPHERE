@@ -1,6 +1,14 @@
 /* *{
     margin: 0 !important;
 } */
+ .btn{
+    background-color: #DB4444 !important;
+    color: white !important;
+    border: 0px;
+ }
+ .btn:hover{
+    background-color: #b38a8a !important;
+ }
 body{
     display: flex;
     flex-direction: column;
@@ -62,3 +70,11 @@ footer{
 .copyrights{
     color: rgb(173, 173, 173);
 }
+
+/* home.ejs */
+.card-text{
+    color: #DB4444;
+    font-weight: 600;
+    font-size: larger;
+}
+/* details.ejs */
