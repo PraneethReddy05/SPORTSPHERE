@@ -105,6 +105,25 @@ app.get("/cart", (req, res) => {
     res.send("Cart of the respective user");
 })
 
+app.get("/search",async(req,res)=>{
+    let {query}=req.query;
+    console.log({query});
+
+    try{
+        const filteredProducts=await Products.find({
+            $or:[
+                {name:{$regex:query,$options:"i"}},
+                {description:{$regex:query,$options:"i"}}
+            ],
+        })
+    
+        res.render("searchProducts.ejs",{filteredProducts,query});
+    }
+    catch(err){
+        console.log(err);
+    }
+})
+
 app.post("/signup/user", async (req, res) => {
     try {
         // console.log("Signup data: ", req.body);
@@ -124,7 +143,7 @@ app.post("/signup/user", async (req, res) => {
     }
 })
 
-app.post("/login/user",passport.authenticate("local",{failureRedirect:'/login'}),async(req,res)=>{
+app.post("/login/user",passport.authenticate("local",{failureRedirect:'/login/user'}),async(req,res)=>{
     res.redirect("/home");
 })
 

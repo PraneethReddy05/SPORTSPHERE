@@ -1,0 +1,30 @@
+<% layout("/layouts/boilerplate") -%>
+
+<div class="mt-5 text-center mb-5">
+    <h1>Search results for "<%=query%>"</h1>
+</div>
+<div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 ms-3 mb-5">
+    <!-- <p><%= filteredProducts.length %></p> -->
+    <%  if(filteredProducts.length>0){ %>
+        <% for(let product of filteredProducts){ %>
+            <a href="/products/<%= product._id%>" class="product-link">
+                <div class="card col mb-4" style="width: 18rem;height: 30rem;">
+                    <img src="<%=product.images%>" class="card-img-top" style="height: 20rem;" alt="">
+                    <div class="card-body border-top">
+                        <h5 class="card-title">
+                            <%=product.name %>
+                        </h5>
+                        <p class="card-text">
+                            &#8377;<%= product.price %>
+                        </p>
+                    
+                    </div>
+                </div>
+            </a> 
+            <% } %>
+            <% }else{%>
+                <p>No products found matching your search criteria.</p>
+            <% } %>
+   
+</div>
+</body>
