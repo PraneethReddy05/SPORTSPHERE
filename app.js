@@ -7,6 +7,7 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const Products = require("./models/Products.js");
 const User = require("./models/Users.js");
+const Cart = require("./models/Cart.js");
 const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
