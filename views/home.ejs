@@ -1,17 +1,19 @@
 <% layout("/layouts/boilerplate") -%>
 <body>
-    <h1>All Products</h1>
-    <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 ms-3">
+    <div class="mt-5 text-center mb-5">
+        <h1>All Products</h1>
+    </div>
+    <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 ms-3 mb-5">
         <% for(let product of allProducts){ %>
             <a href="/products/<%= product._id%>" class="product-link">
                 <div class="card col mb-4" style="width: 18rem;height: 30rem;">
-                    <img src="<%=product.images%>" class="card-img-top" alt="">
+                    <img src="<%=product.images%>" class="card-img-top" style="height: 20rem;" alt="">
                     <div class="card-body border-top">
                         <h5 class="card-title">
                             <%=product.name %>
                         </h5>
                         <p class="card-text">
-                            <%= product.description %>
+                            &#8377;<%= product.price %>
                         </p>
                     
                     </div>

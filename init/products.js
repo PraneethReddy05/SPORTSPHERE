@@ -98,7 +98,7 @@ const products=[
       "description": "Professional-grade paddle for advanced table tennis players.",
       "price": 2200,
       "category": "676f92c5039cbe175727df6c", // Table Tennis
-      "stock": 35,
+      "stock": 0,
       "images": "https://imgs.search.brave.com/7r0l86svkTLw2NiiefS1qIiaesb00XsGt0HLmKah8eg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL0kv/ODFVREJQUTczV0wu/anBn",
       "reviews": []
     }
