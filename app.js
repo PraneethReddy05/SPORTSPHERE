@@ -8,6 +8,7 @@ const ejsMate = require("ejs-mate");
 const Products = require("./models/Products.js");
 const User = require("./models/Users.js");
 const session = require("express-session");
+const flash=require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 async function main() {
@@ -42,6 +43,7 @@ const sessionoptions = {
 };
 
 app.use(session(sessionoptions));
+app.use(flash());
 
 //middleware for passport
 app.use(passport.initialize());
@@ -50,7 +52,12 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-
+//flash messages middleware
+app.use((req,res,next)=>{
+    res.locals.success=req.flash("success");
+    res.locals.error=req.flash("error");
+    next();
+});
 
 
 //home route
@@ -136,16 +143,22 @@ app.post("/signup/user", async (req, res) => {
             if(err){
                 console.log(err);
             }
+            req.flash("success","Successfully Registered!!");
             res.redirect("/home");
         })
     }catch(err){
+        req.flash("error",err.message);
         console.log(err);
     }
 })
 
-app.post("/login/user",passport.authenticate("local",{failureRedirect:'/login/user'}),async(req,res)=>{
+
+
+app.post("/login/user",passport.authenticate("local",{failureRedirect:'/login/user',failureFlash: true}),async(req,res)=>{
+    req.flash("success","Successfully logged in!!");
     res.redirect("/home");
 })
+
 
 
 
