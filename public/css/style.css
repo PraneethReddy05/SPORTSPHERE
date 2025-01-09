@@ -1,6 +1,3 @@
-/* *{
-    margin: 0 !important;
-} */
  .btn{
     background-color: #DB4444 !important;
     color: white !important;
@@ -25,6 +22,7 @@ body{
 /* NavBar */
 .navbar{
     background-color: white;
+    width: 100vw;
 }
 .navbar-brand{
     font-size: x-large;
