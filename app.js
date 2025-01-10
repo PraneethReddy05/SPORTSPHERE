@@ -56,6 +56,7 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req,res,next)=>{
     res.locals.success=req.flash("success");
     res.locals.error=req.flash("error");
+    res.locals.currUser=req.user;
     next();
 });
 
@@ -130,7 +131,8 @@ app.get("/search",async(req,res)=>{
         console.log(err);
     }
 })
-
+ 
+//signup user
 app.post("/signup/user", async (req, res) => {
     try {
         // console.log("Signup data: ", req.body);
@@ -144,7 +146,7 @@ app.post("/signup/user", async (req, res) => {
                 console.log(err);
             }
             req.flash("success","Successfully Registered!!");
-            res.redirect("/home");
+            res.redirect("/products");
         })
     }catch(err){
         req.flash("error",err.message);
@@ -153,12 +155,23 @@ app.post("/signup/user", async (req, res) => {
 })
 
 
-
+//login user
 app.post("/login/user",passport.authenticate("local",{failureRedirect:'/login/user',failureFlash: true}),async(req,res)=>{
     req.flash("success","Successfully logged in!!");
-    res.redirect("/home");
+    res.redirect("/products");
 })
 
+
+//logout
+app.get("/logout",(req,res)=>{
+    req.logout((err)=>{
+        if(err){
+            console.log(err);
+        }
+        req.flash("success","You are logged out!")
+        res.redirect("/products");
+    })
+})
 
 
 
