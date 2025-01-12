@@ -175,7 +175,8 @@ app.post("/signup/seller", async (req, res) => {
                 console.log(err);
             }
             req.flash("success","Successfully Registered!!");
-            res.redirect("sellers/dashboard.ejs");
+            console.log(req.user);
+            res.redirect("/seller/dashboard");
         })
     }catch(err){
         req.flash("error",err.message);
@@ -186,7 +187,13 @@ app.post("/signup/seller", async (req, res) => {
 //login seller
 app.post("/login/seller",passport.authenticate("local",{failureRedirect:'/login/seller',failureFlash: true}),async(req,res)=>{
     req.flash("success","Successfully logged in!!");
-    res.redirect("/products");
+    console.log(req.user);
+    res.redirect("/seller/dashboard");
+})
+
+//Seller dashboard
+app.get("/seller/dashboard",async (req,res)=>{
+    res.render("sellers/dashboard.ejs");
 })
 
 //logout

@@ -15,7 +15,7 @@ const sellerSchema = new Schema({
       city: { type: String, required: true },
       state: { type: String, required: true }
     },
-    products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }], // References Product collection
+    products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product', default:[] }], // References Product collection
     // rating: { type: Number, default: 0 },
     // bankDetails: {
     //   accountNumber: { type: String },
