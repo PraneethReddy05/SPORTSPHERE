@@ -43,6 +43,7 @@
           <button class="btn search-btn" type="submit">Search</button>
         </form>
       </div>
+      <% if(currUser) {%>
       <div class="col">
         <div class="d-flex flex-row gap-3">
           <i class="icons fa-regular fa-heart"></i>
@@ -50,5 +51,6 @@
           <i class="icons user fa-solid fa-user"></i>
         </div>
       </div>
+      <% } %>
     </div>
   </nav>

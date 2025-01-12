@@ -7,6 +7,7 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const Products = require("./models/Products.js");
 const User = require("./models/Users.js");
+const Seller = require("./models/Seller.js");
 const session = require("express-session");
 const flash=require("connect-flash");
 const passport = require("passport");
@@ -161,6 +162,26 @@ app.post("/login/user",passport.authenticate("local",{failureRedirect:'/login/us
     res.redirect("/products");
 })
 
+//signup seller
+app.post("/signup/seller", async (req, res) => {
+    try {
+
+        let { username,name,storeName,email, phone, street, pincode, city, state, password } = req.body;
+        let newSeller = new Seller ({ username,name,storeName, email, phone, address: { street, pincode, city, state } });
+        // console.log(newUser);
+        const registeredSeller=await Seller.register(newSeller, password);
+        req.login(registeredSeller,(err)=>{
+            if(err){
+                console.log(err);
+            }
+            req.flash("success","Successfully Registered!!");
+            res.redirect("sellers/dashboard.ejs");
+        })
+    }catch(err){
+        req.flash("error",err.message);
+        console.log(err);
+    }
+})
 
 //logout
 app.get("/logout",(req,res)=>{
