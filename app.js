@@ -64,13 +64,14 @@ app.use((req,res,next)=>{
 
 //home route
 app.get("/home", async (req, res) => {
-    res.send("home to be implemented")
+    res.render("home.ejs");
+    // res.send("home to be implemented")
 })
 
 //view all products
 app.get("/products", async (req, res) => {
     const allProducts = await Products.find({});
-    res.render("home.ejs", { allProducts });
+    res.render("products.ejs", { allProducts });
 })
 
 //product details
@@ -151,7 +152,8 @@ app.post("/signup/user", async (req, res) => {
         })
     }catch(err){
         req.flash("error",err.message);
-        console.log(err);
+        res.redirect("/signup/user");
+        console.log(err.message);
     }
 })
 
@@ -175,10 +177,11 @@ app.post("/signup/seller", async (req, res) => {
                 console.log(err);
             }
             req.flash("success","Successfully Registered!!");
-            res.redirect("sellers/dashboard.ejs");
+        
         })
     }catch(err){
         req.flash("error",err.message);
+        res.redirect("/signup/user");
         console.log(err);
     }
 })
@@ -198,6 +201,24 @@ app.get("/logout",(req,res)=>{
         req.flash("success","You are logged out!")
         res.redirect("/products");
     })
+})
+
+//Categories
+
+app.get("/categories/equipment",(req,res)=>{
+
+})
+
+app.get("/categories/apparel",(req,res)=>{
+    
+})
+
+app.get("/categories/footwear",(req,res)=>{
+    
+})
+
+app.get("/categories/accessories",(req,res)=>{
+    
 })
 
 
