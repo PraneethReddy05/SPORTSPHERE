@@ -183,6 +183,12 @@ app.post("/signup/seller", async (req, res) => {
     }
 })
 
+//login seller
+app.post("/login/seller",passport.authenticate("local",{failureRedirect:'/login/seller',failureFlash: true}),async(req,res)=>{
+    req.flash("success","Successfully logged in!!");
+    res.redirect("/products");
+})
+
 //logout
 app.get("/logout",(req,res)=>{
     req.logout((err)=>{
