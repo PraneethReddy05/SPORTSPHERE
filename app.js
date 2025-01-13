@@ -242,6 +242,16 @@ app.get("/seller/dashboard", async (req,res)=>{
     res.render("sellers/dashboard.ejs");
 })
 
+//seller adding new product
+app.get("/seller/product/new",(req,res)=>{
+    res.render("sellers/newProductForm.ejs");
+});
+
+//new product
+app.post("/seller/product/new",async(req,res)=>{
+    console.log(req.body);
+});
+
 //logout
 app.get("/logout",(req,res)=>{
     req.logout((err)=>{

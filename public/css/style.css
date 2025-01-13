@@ -111,3 +111,10 @@ footer{
     font-size: 1.5rem;
     color: #d3d3d3;
 }
+
+/* New Product form */
+.new-image{
+    border-radius: 10px;
+    width: 25rem;
+    height: 25rem;
+}
