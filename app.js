@@ -186,7 +186,7 @@ app.post("/signup/user", async (req, res) => {
         })
     }catch(err){
         req.flash("error",err.message);
-        res.redirect("/signup/user");
+        res.redirect("/home");
         console.log(err.message);
     }
 })
@@ -194,7 +194,7 @@ app.post("/signup/user", async (req, res) => {
 
 app.post("/login/user",passport.authenticate('user-local', {failureRedirect: '/login/user',failureFlash: true,}),async(req, res) => {
     req.flash('success', 'Successfully logged in as user!');
-    res.redirect('/products');
+    res.redirect("/home");
 });
 
 //User dashboard
@@ -242,6 +242,16 @@ app.get("/seller/dashboard", async (req,res)=>{
     res.render("sellers/dashboard.ejs");
 })
 
+//seller adding new product
+app.get("/seller/product/new",(req,res)=>{
+    res.render("sellers/newProductForm.ejs");
+});
+
+//new product
+app.post("/seller/product/new",async(req,res)=>{
+    console.log(req.body);
+});
+
 //logout
 app.get("/logout",(req,res)=>{
     req.logout((err)=>{
@@ -249,7 +259,7 @@ app.get("/logout",(req,res)=>{
             console.log(err);
         }
         req.flash("success","You are logged out!")
-        res.redirect("/products");
+        res.redirect("/home");
     })
 })
 

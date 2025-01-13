@@ -1,0 +1,69 @@
+<% layout("/layouts/boilerplate") -%>
+<div class="row mt-3 mb-5 gap-4 ">
+    <h1 class="col-6 offset-2">Add new Product</h1>
+    <div class="col-6 offset-2">
+        <form action="/seller/product/new" method="post" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" name="name" id="name"  class="form-control" required>
+                <div class="valid-feedback">Looks good!</div>
+                <div class="invalid-feedback">Please enter valid product name!</div>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea name="description" id="description" class="form-control" required></textarea>
+                <div class="valid-feedback">good details!</div>
+                <div class="invalid-feedback">Please enter description!</div>
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Image</label>
+                <input type="text" name="image" id="image"  class="form-control" type="text" required>
+                <div class="valid-feedback">Looks good!</div>
+                <div class="invalid-feedback">Please enter valid image url!</div>
+            </div>
+            <div class="row">
+                <div class="mb-3 col-4">
+                    <label for="category" class="form-label">Category</label>
+                    <select class="form-select" id="category" name="category" required>
+                        <option value="" disabled selected>Choose category</option>
+                        <option value="sports-equipment">sports-equipment</option>
+                        <option value="apparel">apparel</option>
+                        <option value="footwear">footwear</option>
+                        <option value="accessories">accessories</option>
+                        <option value="fitness-gear">fitness-gear</option>
+                        <option value="outdoor-sports">outdoor-sports</option>
+                    </select>
+                </div>
+                <div class="mb-3 col-4">
+                    <label for="price" class="form-label">Price</label>
+                    <input type="text" name="price" id="price"  class="form-control" type="text" required>
+                    <div class="valid-feedback">Looks affordable!</div>
+                    <div class="invalid-feedback">Please enter valid price!</div>
+                </div>
+                <div class="mb-3 col-4">
+                    <label for="stock" class="form-label">Stock</label>
+                    <input type="text" name="stock" id="stock"  class="form-control" type="text" required>
+                    <div class="valid-feedback">Looks sustainable!</div>
+                    <div class="invalid-feedback">Please replenish your stock!</div>
+                </div>
+            </div>
+            <button class="btn btn-success">Register Product</button>
+        </form>
+    </div>
+    <div class="col d-flex flex-column gap-3">
+        <img class="new-image" id="img-preview" src="https://www.vallabhcomponent.com/assets/images/default.jpg" alt="Product Image">
+        <button class="btn col-3 " id="preview-img-btn">Preview Image</button>
+    </div>
+</div>
+<script>
+    document.getElementById('preview-img-btn').addEventListener('click', function (event) {
+      event.preventDefault();
+      const newSrc = document.getElementById('image').value;
+      if (newSrc) {
+        const img = document.getElementById('img-preview');
+        img.src = `${newSrc}?t=${new Date().getTime()}`;
+      } else {
+        alert('Please enter a valid image URL.');
+      }
+    });
+</script>
