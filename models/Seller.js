@@ -16,6 +16,7 @@ const sellerSchema = new Schema({
       state: { type: String, required: true }
     },
     products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product', default:[] }], // References Product collection
+    role:{type: String,default:"Seller"}
     // rating: { type: Number, default: 0 },
     // bankDetails: {
     //   accountNumber: { type: String },
@@ -23,9 +24,8 @@ const sellerSchema = new Schema({
     // },
     // status: { type: String, enum: ['active', 'inactive', 'banned'], default: 'active' },
     // createdAt: { type: Date, default: Date.now }
-  });
-  
-  sellerSchema.plugin(passportLocalMongoose); 
+});
+sellerSchema.plugin(passportLocalMongoose); 
 const Seller = mongoose.model('Seller', sellerSchema);
 module.exports=Seller;
   

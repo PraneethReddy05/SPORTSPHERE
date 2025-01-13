@@ -49,9 +49,24 @@ app.use(flash());
 //middleware for passport
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.use('user-local',User.createStrategy()); // Uses passport-local-mongoose's strategy
+passport.use('seller-local',Seller.createStrategy()); // Uses passport-local-mongoose's strategy
+passport.serializeUser((account, done) => {
+    done(null, { id: account._id, role: account.role }); // Store both id and role in the session
+});
+passport.deserializeUser(async ({ id, role }, done) => {
+    try {
+        let account;
+        if (role === 'User') {
+            account = await User.findById(id);
+        } else if (role === 'Seller') {
+            account = await Seller.findById(id);
+        }
+        done(null, account);
+    } catch (err) {
+        done(err);
+    }
+});
 
 //flash messages middleware
 app.use((req,res,next)=>{
@@ -60,6 +75,25 @@ app.use((req,res,next)=>{
     res.locals.currUser=req.user;
     next();
 });
+
+//middlewares for handling unautorized access
+// function ensureAuthenticated(req, res, next) {
+//     if (req.isAuthenticated()) {
+//         return next();
+//     }
+//     req.flash('error', 'You must be logged in!');
+//     res.redirect('/login');
+// }
+
+// function ensureRole(role) {
+//     return (req, res, next) => {
+//         if (req.isAuthenticated() && req.user.role === role) {
+//             return next();
+//         }
+//         req.flash('error', 'Access denied!');
+//         res.redirect('/login');
+//     };
+// }
 
 
 //home route
@@ -158,11 +192,15 @@ app.post("/signup/user", async (req, res) => {
 })
 
 
-//login user
-app.post("/login/user",passport.authenticate("local",{failureRedirect:'/login/user',failureFlash: true}),async(req,res)=>{
-    req.flash("success","Successfully logged in!!");
-    res.redirect("/products");
-})
+app.post("/login/user",passport.authenticate('user-local', {failureRedirect: '/login/user',failureFlash: true,}),async(req, res) => {
+    req.flash('success', 'Successfully logged in as user!');
+    res.redirect('/products');
+});
+
+//User dashboard
+// app.get('/user/dashboard', ensureAuthenticated, ensureRole('user'), (req, res) => {
+//     res.send('Welcome to the user dashboard!');
+// });
 
 //signup seller
 app.post("/signup/seller", async (req, res) => {
@@ -188,14 +226,19 @@ app.post("/signup/seller", async (req, res) => {
 })
 
 //login seller
-app.post("/login/seller",passport.authenticate("local",{failureRedirect:'/login/seller',failureFlash: true}),async(req,res)=>{
-    req.flash("success","Successfully logged in!!");
-    console.log(req.user);
-    res.redirect("/seller/dashboard");
-})
+app.post("/login/seller",passport.authenticate('seller-local', {failureRedirect: '/login/seller',failureFlash: true,}),async(req, res) => {
+        req.flash('success', 'Successfully logged in as seller!');
+        res.redirect('/seller/dashboard');
+    }
+);
+
 
 //Seller dashboard
-app.get("/seller/dashboard",async (req,res)=>{
+app.get("/seller/dashboard", async (req,res)=>{
+    console.log(req.user);
+    // const {_id} = req.user;
+    // const seller = await Seller.findById(_id);
+    // console.log(seller);
     res.render("sellers/dashboard.ejs");
 })
 

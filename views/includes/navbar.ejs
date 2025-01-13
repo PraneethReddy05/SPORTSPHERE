@@ -1,9 +1,9 @@
 <nav class="navbar navbar-expand-lg pt-4 pb-3 border-bottom sticky-top">
     <div class="container-fluid row">
-      <div class="col">
+      <div class="col-1">
         <a class="navbar-brand ms-4" href="/home">SportSphere</a>
       </div>
-      <div class="col-7">
+      <div class="col-6">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -37,6 +37,13 @@
           </div>
         </div>
       </div>
+      <% if(currUser){if(currUser.role == "Seller"){ %>
+        <div class="col-1">
+          <form action="/seller/product/new" method="get">
+            <button class="btn">Add Product</button>
+          </form>
+        </div>
+      <% }} %>
       <div class="col-2 me-3">
         <form action="/search" method="GET" class="search d-flex" role="search">
           <input class="form-control me-2" type="text" name="query" placeholder="Search" aria-label="Search">
