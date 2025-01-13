@@ -212,20 +212,29 @@ app.get("/logout",(req,res)=>{
 
 //Categories
 
-app.get("/categories/equipment",(req,res)=>{
+app.get("/category/sports-equipment",async (req,res)=>{
+    const products = await Products.find({ category: "sports-equipment" });
+    const category="SPORTS-EQUIPMENT"
+    res.render("categoryProducts.ejs",{products,category});
 
 })
 
-app.get("/categories/apparel",(req,res)=>{
-    
+app.get("/category/apparel",async(req,res)=>{
+    const products = await Products.find({ category: "apparel" });
+    const category="APPAREL"
+    res.render("categoryProducts.ejs",{products,category});
 })
 
-app.get("/categories/footwear",(req,res)=>{
-    
+app.get("/category/footwear",async(req,res)=>{
+    const products = await Products.find({ category: "footwear" });
+    const category="FOOTWEAR"
+    res.render("categoryProducts.ejs",{products,category});
 })
 
-app.get("/categories/accessories",(req,res)=>{
-    
+app.get("/category/accessories",async(req,res)=>{
+    const products = await Products.find({ category: "sports-equipment" });
+    const category="ACCESSORIES"
+    res.render("categoryProducts.ejs",{products,category});
 })
 
 
