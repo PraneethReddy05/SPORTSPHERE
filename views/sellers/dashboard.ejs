@@ -1,0 +1,10 @@
+<% layout("/layouts/boilerplate") %>
+<% if (currUser) { %>
+    <h1 class="mt-5">Seller Dashboard Page</h1>
+    <h3>Welcome, <%= currUser.name %></h3>
+<% } else { %>
+    <h1 class="mt-5">Seller Dashboard Page</h1>
+    <h3>You are not logged in.</h3>
+    <p>Debug info: <%= JSON.stringify(currUser) %></p>
+<% } %>
+<%= currUser %>

@@ -4,8 +4,14 @@
 <div class="row mt-3 mb-5">
     <h1 class="col-6 offset-2">Signup</h1>
     <div class="col-6 offset-2">
-        <form action="/signup" method="post" class="needs-validation" novalidate>
+        <form action="/signup/seller" method="post" class="needs-validation" novalidate>
     
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" name="username" id="username"  class="form-control" required>
+                <div class="valid-feedback">Looks good!</div>
+                <div class="invalid-feedback">Please enter valid username</div>
+            </div>
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
                 <input type="text" name="name" id="name"  class="form-control" type="text" required>
@@ -13,8 +19,8 @@
                 <div class="invalid-feedback">Please enter valid username</div>
             </div>
             <div class="mb-3">
-                <label for="storename" class="form-label">Store Name</label>
-                <input type="text" name="storename" id="storename"  class="form-control" type="text" required>
+                <label for="storeName" class="form-label">Store Name</label>
+                <input type="text" name="storeName" id="storeName"  class="form-control" type="text" required>
                 <div class="valid-feedback">Looks good!</div>
                 <div class="invalid-feedback">Please enter valid username</div>
             </div>

@@ -5,7 +5,11 @@ const productSchema = new Schema({
     name: { type: String, required: true },
     description: { type: String, required: true},
     price: { type: Number, required: true },
-    category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true }, // References Category collection
+    category: { 
+      type: String, 
+      required: true,
+      enum: ['sports-equipment', 'apparel', 'footwear', 'accessories', 'fitness-gear', 'outdoor-sports'] // Restricts category to predefined values
+    },
     stock: { type: Number, required: true },
     images: { type: String,default:"https://www.vallabhcomponent.com/assets/images/default.jpg" }, // Array of image URLs
     // rating: { type: Number, default: 0 },

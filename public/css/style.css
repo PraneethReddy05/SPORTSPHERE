@@ -16,8 +16,9 @@ body{
     flex-direction: column;
     min-height: 100vh;
     margin: 0 !important;
+    overflow-x: hidden;
 }
-.container{
+.container-fluid{
     flex: 1;
 }
 .product-link{
@@ -60,7 +61,7 @@ body{
 footer{
     background-color: black;
     color: white;
-    width: 100vw;
+    width: 100vw !important;
 }
 .footer-link{
     color: white;
@@ -74,10 +75,51 @@ footer{
     color: rgb(173, 173, 173);
 }
 
-/* home.ejs */
+/* products.ejs */
 .card-text{
     color: #DB4444;
     font-weight: 600;
     font-size: larger;
 }
-/* details.ejs */
+
+/* home.ejs */
+
+.categories {
+    display: flex;
+    flex-direction: row; /* Align items in a row */
+    gap: 20px; /* Add spacing between items */
+    justify-content: center; /* Center the items horizontally */
+    flex-wrap: wrap; /* Ensure items wrap if they exceed the row width */
+}
+
+.categories a {
+    text-decoration: none; /* Remove underline for links */
+    display: block; /* Allow the entire div to be clickable */
+}
+
+.category-item {
+    display: flex;
+    padding: 20px;
+    height: 150px;
+    flex: 1; /* Allow equal space for each category */
+    max-width: 200px; /* Limit the width of each category */
+    text-align: center; /* Center the text inside the div */
+    background-color: #2f2f2f; /* Light background for better visibility */
+    border-radius: 8px; /* Add rounded corners */
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for better design */
+}
+
+.category-item h2 {
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    color: #d3d3d3;
+}
+
+/* New Product form */
+.new-image{
+    border-radius: 10px;
+    width: 25rem;
+    height: 25rem;
+}

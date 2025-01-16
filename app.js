@@ -7,8 +7,9 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const Products = require("./models/Products.js");
 const User = require("./models/Users.js");
-const Cart = require("./models/Cart.js");
+const Seller = require("./models/Seller.js");
 const session = require("express-session");
+const flash=require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 async function main() {
@@ -43,26 +44,68 @@ const sessionoptions = {
 };
 
 app.use(session(sessionoptions));
+app.use(flash());
 
 //middleware for passport
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.use('user-local',User.createStrategy()); // Uses passport-local-mongoose's strategy
+passport.use('seller-local',Seller.createStrategy()); // Uses passport-local-mongoose's strategy
+passport.serializeUser((account, done) => {
+    done(null, { id: account._id, role: account.role }); // Store both id and role in the session
+});
+passport.deserializeUser(async ({ id, role }, done) => {
+    try {
+        let account;
+        if (role === 'User') {
+            account = await User.findById(id);
+        } else if (role === 'Seller') {
+            account = await Seller.findById(id);
+        }
+        done(null, account);
+    } catch (err) {
+        done(err);
+    }
+});
 
+//flash messages middleware
+app.use((req,res,next)=>{
+    res.locals.success=req.flash("success");
+    res.locals.error=req.flash("error");
+    res.locals.currUser=req.user;
+    next();
+});
 
+//middlewares for handling unautorized access
+// function ensureAuthenticated(req, res, next) {
+//     if (req.isAuthenticated()) {
+//         return next();
+//     }
+//     req.flash('error', 'You must be logged in!');
+//     res.redirect('/login');
+// }
+
+// function ensureRole(role) {
+//     return (req, res, next) => {
+//         if (req.isAuthenticated() && req.user.role === role) {
+//             return next();
+//         }
+//         req.flash('error', 'Access denied!');
+//         res.redirect('/login');
+//     };
+// }
 
 
 //home route
 app.get("/home", async (req, res) => {
-    res.send("home to be implemented")
+    res.render("home.ejs");
+    // res.send("home to be implemented")
 })
 
 //view all products
 app.get("/products", async (req, res) => {
     const allProducts = await Products.find({});
-    res.render("home.ejs", { allProducts });
+    res.render("products.ejs", { allProducts });
 })
 
 //product details
@@ -106,6 +149,26 @@ app.get("/cart", (req, res) => {
     res.send("Cart of the respective user");
 })
 
+app.get("/search",async(req,res)=>{
+    let {query}=req.query;
+    console.log({query});
+
+    try{
+        const filteredProducts=await Products.find({
+            $or:[
+                {name:{$regex:query,$options:"i"}},
+                {description:{$regex:query,$options:"i"}}
+            ],
+        })
+    
+        res.render("searchProducts.ejs",{filteredProducts,query});
+    }
+    catch(err){
+        console.log(err);
+    }
+})
+ 
+//signup user
 app.post("/signup/user", async (req, res) => {
     try {
         // console.log("Signup data: ", req.body);
@@ -118,15 +181,113 @@ app.post("/signup/user", async (req, res) => {
             if(err){
                 console.log(err);
             }
-            res.redirect("/home");
+            req.flash("success","Successfully Registered!!");
+            res.redirect("/products");
         })
     }catch(err){
+        req.flash("error",err.message);
+        res.redirect("/home");
+        console.log(err.message);
+    }
+})
+
+
+app.post("/login/user",passport.authenticate('user-local', {failureRedirect: '/login/user',failureFlash: true,}),async(req, res) => {
+    req.flash('success', 'Successfully logged in as user!');
+    res.redirect("/home");
+});
+
+//User dashboard
+// app.get('/user/dashboard', ensureAuthenticated, ensureRole('user'), (req, res) => {
+//     res.send('Welcome to the user dashboard!');
+// });
+
+//signup seller
+app.post("/signup/seller", async (req, res) => {
+    try {
+
+        let { username,name,storeName,email, phone, street, pincode, city, state, password } = req.body;
+        let newSeller = new Seller ({ username,name,storeName, email, phone, address: { street, pincode, city, state } });
+        // console.log(newUser);
+        const registeredSeller=await Seller.register(newSeller, password);
+        req.login(registeredSeller,(err)=>{
+            if(err){
+                console.log(err);
+            }
+            req.flash("success","Successfully Registered!!");
+            console.log(req.user);
+            res.redirect("/seller/dashboard");
+        })
+    }catch(err){
+        req.flash("error",err.message);
+        res.redirect("/signup/user");
         console.log(err);
     }
 })
 
-app.post("/login/user",passport.authenticate("local",{failureRedirect:'/login'}),async(req,res)=>{
-    res.redirect("/home");
+//login seller
+app.post("/login/seller",passport.authenticate('seller-local', {failureRedirect: '/login/seller',failureFlash: true,}),async(req, res) => {
+        req.flash('success', 'Successfully logged in as seller!');
+        res.redirect('/seller/dashboard');
+    }
+);
+
+
+//Seller dashboard
+app.get("/seller/dashboard", async (req,res)=>{
+    console.log(req.user);
+    // const {_id} = req.user;
+    // const seller = await Seller.findById(_id);
+    // console.log(seller);
+    res.render("sellers/dashboard.ejs");
+})
+
+//seller adding new product
+app.get("/seller/product/new",(req,res)=>{
+    res.render("sellers/newProductForm.ejs");
+});
+
+//new product
+app.post("/seller/product/new",async(req,res)=>{
+    console.log(req.body);
+});
+
+//logout
+app.get("/logout",(req,res)=>{
+    req.logout((err)=>{
+        if(err){
+            console.log(err);
+        }
+        req.flash("success","You are logged out!")
+        res.redirect("/home");
+    })
+})
+
+//Categories
+
+app.get("/category/sports-equipment",async (req,res)=>{
+    const products = await Products.find({ category: "sports-equipment" });
+    const category="SPORTS-EQUIPMENT"
+    res.render("categoryProducts.ejs",{products,category});
+
+})
+
+app.get("/category/apparel",async(req,res)=>{
+    const products = await Products.find({ category: "apparel" });
+    const category="APPAREL"
+    res.render("categoryProducts.ejs",{products,category});
+})
+
+app.get("/category/footwear",async(req,res)=>{
+    const products = await Products.find({ category: "footwear" });
+    const category="FOOTWEAR"
+    res.render("categoryProducts.ejs",{products,category});
+})
+
+app.get("/category/accessories",async(req,res)=>{
+    const products = await Products.find({ category: "sports-equipment" });
+    const category="ACCESSORIES"
+    res.render("categoryProducts.ejs",{products,category});
 })
 
 
