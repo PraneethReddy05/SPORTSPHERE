@@ -238,7 +238,7 @@ app.get("/seller/dashboard", async (req,res)=>{
     console.log(req.user);
     // const {_id} = req.user;
     const seller = await Seller.findById(req.user._id).populate("products");
-    console.log(seller);
+    // console.log(seller);
     res.render("sellers/dashboard.ejs",{seller});
 })
 
@@ -255,9 +255,34 @@ app.post("/seller/product/new",async(req,res)=>{
     let newProduct = new Products(req.body.product);
     let seller = await Seller.findByIdAndUpdate(req.user._id,{ $push: { products: newProduct } });
     await newProduct.save();
-    console.log(newProduct);
+    res.redirect("/seller/dashboard");
+    // console.log(newProduct);
     // console.log(req.body);
 });
+
+//edit product
+
+app.get("/products/:productId/edit",async(req,res)=>{
+    let {productId}=req.params;
+    // console.log(productId);
+    let product= await Products.findById(productId);
+    // console.log(product);
+    res.render("sellers/edit.ejs",{product});
+});
+
+//edit product post
+
+app.put("/products/:productId/edit",async (req,res)=>{
+    let {productId}=req.params;
+    await Products.findByIdAndUpdate(productId,{...req.body.product});
+    res.redirect("/seller/dashboard");
+})
+
+app.delete("/products/:productId",async(req,res)=>{
+    let {productId}=req.params;
+    await Products.findByIdAndDelete(productId);
+    res.redirect("/seller/dashboard");
+})
 
 //logout
 app.get("/logout",(req,res)=>{

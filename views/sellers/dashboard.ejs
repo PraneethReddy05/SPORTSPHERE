@@ -25,7 +25,12 @@
                     <p class="card-text">
                         &#8377;<%= product.price %>
                     </p>
-
+                </div>
+                <div class="buttons row">
+                    <a href="/products/<%= product._id%>/edit" class="btn col-3 offset-3">Edit</a>
+                    <form action="/products/<%= product._id%>?_method=DELETE" method="post" class="col-3">
+                    <button class="btn">Delete</button>
+                    </form>
                 </div>
             </div>
         </a>
