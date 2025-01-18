@@ -50,11 +50,13 @@
           <button class="btn search-btn" type="submit">Search</button>
         </form>
       </div>
-      <% if(currUser) {%>
+      <% if(currUser) { %>
       <div class="col-1 me-3">
         <div class="d-flex flex-row gap-3 justify-content-end">
-          <i class="icons fa-regular fa-heart"></i>
-          <a href="/cart"><i class="icons fa-solid fa-cart-shopping"></i></a>
+          <% if(currUser.role =="User"){ %>
+             <i class="icons fa-regular fa-heart"></i>
+            <a href="/cart"><i class="icons fa-solid fa-cart-shopping"></i></a>
+         <% } %>
           <a href="/logout"><i class="icons user fa-solid fa-user"></i></a>
         </div>
       </div>

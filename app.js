@@ -8,6 +8,7 @@ const ejsMate = require("ejs-mate");
 const Products = require("./models/Products.js");
 const User = require("./models/Users.js");
 const Seller = require("./models/Seller.js");
+const Cart=require("./models/Cart.js")
 const session = require("express-session");
 const flash=require("connect-flash");
 const passport = require("passport");
@@ -144,9 +145,16 @@ app.get("/login/seller", (req, res) => {
     res.render("sellers/login.ejs")
 })
 
-// cart
-app.get("/cart", (req, res) => {
-    res.send("Cart of the respective user");
+// cart get
+app.get("/cart", async(req, res) => {
+    let userId=req.user._id;
+    let cart=await Cart.findOne({userId}).populate("items.productId");
+    console.log(cart);
+    if(!cart)
+        cart=new Cart({userId});
+    let items=cart.items;
+    res.render("users/cart.ejs",{items});
+
 })
 
 app.get("/search",async(req,res)=>{
@@ -177,6 +185,8 @@ app.post("/signup/user", async (req, res) => {
         let newUser = new User ({ username,name, email, phone, address: { street, pincode, city, state } });
         // console.log(newUser);
         const registeredUser=await User.register(newUser, password);
+        const newCart=new Cart({userId:registeredUser._id});
+        console.log(newCart);
         req.login(registeredUser,(err)=>{
             if(err){
                 console.log(err);
@@ -278,11 +288,39 @@ app.put("/products/:productId/edit",async (req,res)=>{
     res.redirect("/seller/dashboard");
 })
 
+//product delete
 app.delete("/products/:productId",async(req,res)=>{
     let {productId}=req.params;
     await Products.findByIdAndDelete(productId);
     res.redirect("/seller/dashboard");
 })
+
+//add to cart
+app.post("/cart/:productId/add",async(req,res)=>{
+    let userId=req.user._id;
+    console.log("User Id"+userId);
+    // console.log(req.params);
+    let {productId}=req.params;
+    console.log("Prod Id"+productId);
+    let cart=await Cart.findOne({userId});
+
+    if(!cart){
+        cart=new Cart({userId});
+    }
+
+    const existingItem=cart.items.find(item=>item.productId.toString()===productId);
+    if(existingItem){
+        existingItem.quantity+=1;
+    }else{
+        cart.items.push({productId,quantity:1});
+    }
+
+    await cart.save();
+
+})
+
+
+
 
 //logout
 app.get("/logout",(req,res)=>{

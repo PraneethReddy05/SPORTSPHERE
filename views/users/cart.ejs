@@ -1,0 +1,41 @@
+<% layout("/layouts/boilerplate") -%>
+    <div class="mt-5 text-center mb-5">
+        <h1>Cart</h1>
+    </div>
+   <%  if(items.length==0){  %>
+        <h2 class="text-center card-text">Your Cart is Empty.Start Shopping Now!!</h2>
+   <%  }else{  %>
+        <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 ms-3 mb-5">
+            <% let totalAmount = 0; %>
+            <% for(let product of items){ %>
+                <% totalAmount+=product.productId.price*product.quantity %>
+                <a href="/products/<%= product.productId._id%>" class="product-link">
+                    <div class="card col mb-4" style="width: 18rem;height: 30rem;">
+                        <img src="<%=product.productId.images%>" class="card-img-top" style="height: 20rem;" alt="">
+                        <div class="card-body border-top">
+                            <h5 class="card-title">
+                                <%=product.productId.name %>
+                            </h5>
+                            <p class="card-text">
+                                &#8377;<%= product.productId.price %>
+                            </p>
+                            <p class="card-text">
+                                Quantity: <%= product.quantity %>
+                            </p>
+                            <p class="card-text">
+                                Subtotal: <%= product.productId.price*product.quantity %>
+                            </p>
+    
+                        </div>
+                    </div>
+                </a>
+                <% } %>
+        </div>
+    
+        <div class="mt-5 text-center mb-5">
+            <h3>Total Amount: &#8377;<%= totalAmount %></h3>
+            <h4>Shipping:Free</h4>
+            <button class="btn mt-2">Proceed to Checkout</button>
+        </div>
+   <%  }  %>
+    
