@@ -237,19 +237,26 @@ app.post("/login/seller",passport.authenticate('seller-local', {failureRedirect:
 app.get("/seller/dashboard", async (req,res)=>{
     console.log(req.user);
     // const {_id} = req.user;
-    // const seller = await Seller.findById(_id);
-    // console.log(seller);
-    res.render("sellers/dashboard.ejs");
+    const seller = await Seller.findById(req.user._id).populate("products");
+    console.log(seller);
+    res.render("sellers/dashboard.ejs",{seller});
 })
 
 //seller adding new product
 app.get("/seller/product/new",(req,res)=>{
+    // let {id} = req.params;
+    // console.log(id);
     res.render("sellers/newProductForm.ejs");
 });
 
 //new product
 app.post("/seller/product/new",async(req,res)=>{
-    console.log(req.body);
+    // let {id} = req.params;
+    let newProduct = new Products(req.body.product);
+    let seller = await Seller.findByIdAndUpdate(req.user._id,{ $push: { products: newProduct } });
+    await newProduct.save();
+    console.log(newProduct);
+    // console.log(req.body);
 });
 
 //logout
