@@ -35,7 +35,9 @@
         <div class="mt-5 text-center mb-5">
             <h3>Total Amount: &#8377;<%= totalAmount %></h3>
             <h4>Shipping:Free</h4>
-            <button class="btn mt-2">Proceed to Checkout</button>
+            <form action="/checkout" method="get">
+                <button class="btn mt-2">Proceed to Checkout</button>
+            </form>
         </div>
    <%  }  %>
     

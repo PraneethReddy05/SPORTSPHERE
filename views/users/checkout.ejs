@@ -1,0 +1,85 @@
+<%- layout('/layouts/boilerplate') %>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Checkout</h1>
+    <div class="row">
+        <!-- User Address -->
+        <div class="col-md-6 mb-4">
+            <h3>Shipping Address</h3>
+            <p>
+                <strong><%= user.name %></strong><br>
+                <%= user.address.street %>, <%= user.address.pincode %> <br>
+                <%= user.address.city %>, <%= user.address.state %><br>
+                India
+            </p>
+        </div>
+
+        <!-- Delivery Info -->
+        <div class="col-md-6 mb-4">
+            <h3>Delivery Details</h3>
+            <p>
+                Estimated Delivery: <strong>2-3 Days</strong><br>
+                Total Amount: <strong>&#8377;<%= totalAmount %></strong>
+            </p>
+        </div>
+    </div>
+
+    <!-- Payment Method -->
+    <div>
+        <button class="btn btn-primary" id="place-order-btn">Place Order</button>
+    </div>
+</div>
+
+<script>
+    // Pass the totalAmount value directly using a data attribute
+    document.getElementById("place-order-btn").setAttribute('data-amount', '<%= totalAmount %>');
+
+    document.getElementById("place-order-btn").addEventListener("click", async () => {
+        try {
+            const totalAmount = parseFloat(document.getElementById("place-order-btn").getAttribute('data-amount'));
+            
+            // Send a POST request to create the order
+            const response = await fetch("/create-order", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ totalAmount }),
+            });
+
+            const result = await response.json();
+
+            if (!result.success) {
+                alert("Error creating order. Please try again.");
+                return;
+            }
+
+            // Initialize Razorpay Checkout
+            const options = {
+                key: "rzp_test_8RlMHbMDNhfWw4", // Replace with Razorpay Key ID
+                amount: totalAmount * 100, // Convert to paise
+                currency: "INR",
+                order_id: result.orderId,
+                name: "SportSphere",
+                description: "Purchase from SportSphere",
+                handler: function (response) {
+                    alert(`Payment successful! Payment ID: ${response.razorpay_payment_id}`);
+                    window.location.href = "/order-success";
+                },
+                prefill: {
+                    name: "<%= user.name %>",
+                    email: "<%= user.email %>",
+                    contact: "<%= user.phone %>",
+                },
+                theme: {
+                    color: "#3399cc",
+                },
+            };
+
+            const razorpay = new Razorpay(options);
+            razorpay.open();
+        } catch (error) {
+            console.error("Error during payment:", error);
+            alert("Something went wrong. Please try again.");
+        }
+    });
+</script>

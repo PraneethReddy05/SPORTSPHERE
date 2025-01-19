@@ -13,6 +13,7 @@ const session = require("express-session");
 const flash=require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
+const Razorpay = require("razorpay");
 async function main() {
     await mongoose.connect("mongodb://127.0.0.1:27017/SPORTSPHERE")
 }
@@ -67,6 +68,12 @@ passport.deserializeUser(async ({ id, role }, done) => {
     } catch (err) {
         done(err);
     }
+});
+
+//razorpay instance
+const razorpayInstance = new Razorpay({
+    key_id: "rzp_test_8RlMHbMDNhfWw4",
+    key_secret: "015SxpmJtj6mkX5TZGAKLJim",
 });
 
 //flash messages middleware
@@ -145,17 +152,7 @@ app.get("/login/seller", (req, res) => {
     res.render("sellers/login.ejs")
 })
 
-// cart get
-app.get("/cart", async(req, res) => {
-    let userId=req.user._id;
-    let cart=await Cart.findOne({userId}).populate("items.productId");
-    console.log(cart);
-    if(!cart)
-        cart=new Cart({userId});
-    let items=cart.items;
-    res.render("users/cart.ejs",{items});
 
-})
 
 app.get("/search",async(req,res)=>{
     let {query}=req.query;
@@ -319,7 +316,59 @@ app.post("/cart/:productId/add",async(req,res)=>{
 
 })
 
+// cart get
+app.get("/cart", async(req, res) => {
+    let userId=req.user._id;
+    let cart=await Cart.findOne({userId}).populate("items.productId");
+    console.log(cart);
+    if(!cart)
+        cart=new Cart({userId});
+    let items=cart.items;
+    res.render("users/cart.ejs",{items});
 
+});
+
+//checkout
+app.get("/checkout",async(req,res)=>{
+    let userId=req.user._id;
+
+    let user=await User.findById(userId);
+    let cart=await Cart.findOne({userId}).populate("items.productId");
+
+    let totalAmount=cart.items.reduce((total,item)=>{
+        return total+item.productId.price*item.quantity;
+    },0);
+
+    res.render("users/checkout.ejs",{user,cart,totalAmount});
+})
+
+//razorpay
+app.post("/create-order", async (req, res) => {
+    const { totalAmount } = req.body; // Total amount from the request body
+    console.log(req.body);
+
+    try {
+        const options = {
+            amount: totalAmount * 100, // Razorpay requires the amount in paise
+            currency: "INR",
+            receipt: `order_rcptid_${Date.now()}`,
+        };
+
+        // Create the order using Razorpay SDK
+        const order = await razorpayInstance.orders.create(options);
+
+        res.status(200).json({
+            success: true,
+            orderId: order.id, // Send the Razorpay order ID to the frontend
+        });
+    } catch (error) {
+        console.error("Error creating Razorpay order:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to create order. Please try again.",
+        });
+    }
+});
 
 
 //logout
