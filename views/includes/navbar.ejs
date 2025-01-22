@@ -12,6 +12,9 @@
             <a class="nav-link" href="/home">Home</a>
             <a class="nav-link" href="/contact">Contact</a>
             <a class="nav-link" href="/about">About</a>
+            <% if(currUser){if(currUser.role == "Seller"){ %>
+            <a class="nav-link" href="/seller/dashboard">Dashboard</a>
+            <% }} %>
             <!-- <a class="nav-link" href="/signup">Sign Up</a> -->
             <% if(!currUser) {%>
             <li class="nav-item dropdown">
@@ -54,7 +57,7 @@
       <div class="col-1 me-3">
         <div class="d-flex flex-row gap-3 justify-content-end">
           <% if(currUser.role =="User"){ %>
-             <i class="icons fa-regular fa-heart"></i>
+             <!-- <i class="icons fa-regular fa-heart"></i> -->
             <a href="/cart"><i class="icons fa-solid fa-cart-shopping"></i></a>
          <% } %>
          <li class="nav-item dropdown" style="list-style: none;">
