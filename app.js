@@ -8,12 +8,14 @@ const ejsMate = require("ejs-mate");
 const Products = require("./models/Products.js");
 const User = require("./models/Users.js");
 const Seller = require("./models/Seller.js");
-const Cart=require("./models/Cart.js")
+const Cart=require("./models/Cart.js");
+const Review=require("./models/Reviews.js");
 const session = require("express-session");
 const flash=require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const Razorpay = require("razorpay");
+const Product = require("./models/Products.js");
 async function main() {
     await mongoose.connect("mongodb://127.0.0.1:27017/SPORTSPHERE")
 }
@@ -119,7 +121,7 @@ app.get("/products", async (req, res) => {
 //product details
 app.get("/products/:id", async (req, res) => {
     let { id } = req.params;
-    let product = await Products.findById(id);
+    let product = await Products.findById(id).populate({path:"reviews",populate:{path:"author"}});
     res.render("details.ejs", { product });
 })
 
@@ -295,25 +297,23 @@ app.delete("/products/:productId",async(req,res)=>{
 //add to cart
 app.post("/cart/:productId/add",async(req,res)=>{
     let userId=req.user._id;
-    console.log("User Id"+userId);
+    // console.log("User Id"+userId);
     // console.log(req.params);
     let {productId}=req.params;
-    console.log("Prod Id"+productId);
+    // console.log("Prod Id"+productId);
     let cart=await Cart.findOne({userId});
-
     if(!cart){
         cart=new Cart({userId});
     }
-
     const existingItem=cart.items.find(item=>item.productId.toString()===productId);
     if(existingItem){
         existingItem.quantity+=1;
     }else{
         cart.items.push({productId,quantity:1});
     }
-
     await cart.save();
-
+    req.flash("success","Added to cart!");
+    res.redirect(`/products/${productId}`);
 })
 
 // cart get
@@ -409,7 +409,29 @@ app.get("/category/accessories",async(req,res)=>{
     res.render("categoryProducts.ejs",{products,category});
 })
 
-
+//Reviews
+//adding a new review
+app.post("/products/:id/review", async(req,res)=>{
+    let product = await Product.findById(req.params.id);
+    // console.log(req.body.review);
+    let newReview = new Review(req.body.review);
+    newReview.author = req.user._id;
+    console.log(newReview);
+    product.reviews.push(newReview);
+    await newReview.save();
+    await product.save();
+    // console.log(listing);
+    req.flash("success","New review created!");
+    res.redirect(`/products/${product._id}`);
+});
+//deleting reviews
+app.delete("/products/:id/reviews/:reviewId", async(req,res)=>{
+    let { id, reviewId} = req.params;
+    await Product.findByIdAndUpdate(id,{$pull:{reviews:reviewId}});
+    await Review.findByIdAndDelete(reviewId);
+    req.flash("success","review successfully deleted!");
+    res.redirect(`/products/${id}`);
+})
 
 app.listen(8080, (req, res) => {
     console.log("Listening on port 8080");
