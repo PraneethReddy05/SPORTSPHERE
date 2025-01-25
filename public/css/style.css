@@ -99,15 +99,16 @@ footer{
 
 .category-item {
     display: flex;
-    padding: 20px;
+    /* padding: 20px; */
+    padding: 0px;
     height: 170px;
-    width: 145px;
+    width: 143px;
     flex: 1; /* Allow equal space for each category */
     max-width: 200px; /* Limit the width of each category */
     text-align: center; /* Center the text inside the div */
-    background-color: #dadada; /* Light background for better visibility */
+    /* background-color: #dadada;  */
     border-radius: 8px; /* Add rounded corners */
-    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for better design */
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .category-item h2 {
@@ -125,3 +126,78 @@ footer{
     width: 25rem;
     height: 25rem;
 }
+
+.home-bottom{
+    background-color: rgb(236, 236, 236);
+    border-radius: 10px;
+    /* width: 50%; */
+   padding: 10px;
+    justify-content: space-between;
+}
+
+
+/*  experimental card effect */
+.category-card {
+    width: 100%;
+    /* height: 100%; */
+    /* margin: 1rem auto; */
+    perspective: 1000px;
+    cursor: pointer;
+    /* border: none; */
+  }
+
+  .category-card-link {
+    text-decoration: none;
+    color: inherit; /* Use the color defined in the parent */
+    display: block; /* Makes the entire content area clickable */
+    width: 100%; /* Ensures the link spans the full width */
+    height: 100%; /* Ensures the link spans the full height */
+  }
+
+  .category-card-back h2{
+    margin: 0; /* Remove default margins */
+    color: white;
+    display: flex; /* Enable flexbox on the heading */
+    justify-content: center; /* Horizontally center text */
+    align-items: center; /* Vertically center text */
+    width: 100%; /* Ensure it spans the container */
+    height: 100%; /* Match the height of the `.category-card-back` */
+    font-size: 1.5rem; /* Adjust font size if needed */
+  }
+  
+  .category-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+  }
+  
+  .category-card:hover .category-card-inner {
+    transform: rotateY(180deg);
+  }
+  
+  .category-card-front,
+  .category-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+  }
+  
+  .category-card-front {
+    background: white;
+    /* border: 1px solid #e5e7eb; */
+  }
+  
+  .category-card-back {
+    background: #DB4444;
+    color: white;
+    transform: rotateY(180deg);
+  }
+  
+/*  experimental card effect end */
