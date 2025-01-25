@@ -9,11 +9,9 @@ const Products = require("./models/Products.js");
 const User = require("./models/Users.js");
 const Seller = require("./models/Seller.js");
 const Cart=require("./models/Cart.js");
-const Review = require("./models/Reviews.js");
 const session = require("express-session");
 const flash=require("connect-flash");
 const passport = require("passport");
-const LocalStrategy = require("passport-local");
 const Razorpay = require("razorpay");
 const Product = require("./models/Products.js");
 const ExpressError = require("./utils/ExpressError.js");
@@ -24,6 +22,8 @@ const wrapAsync = require("./utils/WrapAsync.js");
 const category = require("./routes/categories.js");
 const reviews = require("./routes/reviews.js");
 const products = require("./routes/products.js");
+const users = require("./routes/user.js");
+const sellers = require("./routes/seller.js");
 
 //mongoDB connection
 async function main() {
@@ -99,6 +99,8 @@ app.use((req,res,next)=>{
 app.use("/category",category);
 app.use("/products/:id/reviews",reviews);
 app.use("/products",products);
+app.use("/user",users);
+app.use("/seller",sellers);
 
 //home route
 app.get("/home", async (req, res) => {
@@ -114,27 +116,6 @@ app.get("/contact", (req, res) => {
 app.get("/about", (req, res) => {
     res.send("About us page");
 })
-
-
-//signup //user
-app.get("/user/signup", (req, res) => {
-    res.render("users/signup.ejs")
-})
-//signup //seller
-app.get("/seller/signup", (req, res) => {
-    res.render("sellers/signup.ejs")
-})
-
-//login //user
-app.get("/user/login", (req, res) => {
-    res.render("users/login.ejs")
-})
-//login //seller
-app.get("/seller/login", (req, res) => {
-    res.render("sellers/login.ejs")
-})
-
-
 
 app.get("/search",async(req,res)=>{
     let {query}=req.query;
@@ -154,134 +135,6 @@ app.get("/search",async(req,res)=>{
         console.log(err);
     }
 })
- 
-//signup user
-app.post("/user/signup", async (req, res) => {
-    try {
-        // console.log("Signup data: ", req.body);
-
-        let { username,name, email, phone, street, pincode, city, state, password } = req.body;
-        let newUser = new User ({ username,name, email, phone, address: { street, pincode, city, state } });
-        // console.log(newUser);
-        const registeredUser=await User.register(newUser, password);
-        const newCart=new Cart({userId:registeredUser._id});
-        // console.log(newCart);
-        req.login(registeredUser,(err)=>{
-            if(err){
-                console.log(err);
-            }
-            req.flash("success","Successfully Registered!!");
-            res.redirect("/products");
-        })
-    }catch(err){
-        req.flash("error",err.message);
-        res.redirect("/home");
-        console.log(err.message);
-    }
-})
-
-
-app.post("/user/login",passport.authenticate('user-local', {failureRedirect: '/user/login',failureFlash: true,}),async(req, res) => {
-    req.flash('success', 'Successfully logged in as user!');
-    res.redirect("/home");
-});
-
-//User dashboard
-// app.get('/user/dashboard', ensureAuthenticated, ensureRole('user'), (req, res) => {
-//     res.send('Welcome to the user dashboard!');
-// });
-
-//signup seller
-app.post("/seller/signup", async (req, res) => {
-    try {
-
-        let { username,name,storeName,email, phone, street, pincode, city, state, password } = req.body;
-        let newSeller = new Seller ({ username,name,storeName, email, phone, address: { street, pincode, city, state } });
-        // console.log(newUser);
-        const registeredSeller=await Seller.register(newSeller, password);
-        req.login(registeredSeller,(err)=>{
-            if(err){
-                console.log(err);
-            }
-            req.flash("success","Successfully Registered!!");
-            console.log(req.user);
-            res.redirect("/seller/dashboard");
-        })
-    }catch(err){
-        req.flash("error",err.message);
-        res.redirect("/home");
-        console.log(err);
-    }
-})
-
-//login seller
-app.post("/seller/login",passport.authenticate('seller-local', {failureRedirect: '/seller/login',failureFlash: true,}),async(req, res) => {
-        req.flash('success', 'Successfully logged in as seller!');
-        res.redirect('/seller/dashboard');
-    }
-);
-
-
-//Seller dashboard
-app.get("/seller/dashboard", async (req,res)=>{
-    console.log(req.user);
-    // const {_id} = req.user;
-    const seller = await Seller.findById(req.user._id).populate("products");
-    // console.log(seller);
-    res.render("sellers/dashboard.ejs",{seller});
-})
-
-//seller adding new product
-app.get("/seller/product/new",(req,res)=>{
-    // let {id} = req.params;
-    // console.log(id);
-    res.render("sellers/newProductForm.ejs");
-});
-
-//new product
-app.post("/seller/product/new",async(req,res)=>{
-    // let {id} = req.params;
-    let newProduct = new Products(req.body.product);
-    let seller = await Seller.findByIdAndUpdate(req.user._id,{ $push: { products: newProduct } });
-    await newProduct.save();
-    res.redirect("/seller/dashboard");
-    // console.log(newProduct);
-    // console.log(req.body);
-});
-
-//add to cart
-app.post("/cart/:productId/add",async(req,res)=>{
-    let userId=req.user._id;
-    // console.log("User Id"+userId);
-    // console.log(req.params);
-    let {productId}=req.params;
-    // console.log("Prod Id"+productId);
-    let cart=await Cart.findOne({userId});
-    if(!cart){
-        cart=new Cart({userId});
-    }
-    const existingItem=cart.items.find(item=>item.productId.toString()===productId);
-    if(existingItem){
-        existingItem.quantity+=1;
-    }else{
-        cart.items.push({productId,quantity:1});
-    }
-    await cart.save();
-    req.flash("success","Added to cart!");
-    res.redirect(`/products/${productId}`);
-})
-
-// cart get
-app.get("/cart", async(req, res) => {
-    let userId=req.user._id;
-    let cart=await Cart.findOne({userId}).populate("items.productId");
-    console.log(cart);
-    if(!cart)
-        cart=new Cart({userId});
-    let items=cart.items;
-    res.render("users/cart.ejs",{items});
-
-});
 
 //checkout
 app.get("/checkout",async(req,res)=>{
@@ -346,7 +199,7 @@ app.all("*", (req, res, next) => {
 app.use((err, req, res, next) => {
     let { statusCode = 500, message="Something went wrong!" } = err;
     // res.status(statusCode).send(message);
-    // console.log(err.message);
+    console.log(err.message);
     res.render("error.ejs",{err});
 })
 
