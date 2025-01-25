@@ -108,8 +108,8 @@ app.use((req,res,next)=>{
 
 //home route
 app.get("/home", async (req, res) => {
-    
-    res.render("home.ejs");
+    const allProducts = await Products.find({});
+    res.render("home.ejs",{allProducts});
     // res.send("home to be implemented")
 })
 
@@ -405,10 +405,21 @@ app.get("/category/footwear",async(req,res)=>{
 })
 
 app.get("/category/accessories",async(req,res)=>{
-    const products = await Products.find({ category: "sports-equipment" });
+    const products = await Products.find({ category: "accessories" });
     const category="ACCESSORIES"
     res.render("categoryProducts.ejs",{products,category});
 })
+app.get("/category/fitness-gear",async(req,res)=>{
+    const products = await Products.find({ category: "fitness-gear" });
+    const category="FITNESS_GEAR"
+    res.render("categoryProducts.ejs",{products,category});
+})
+app.get("/category/outdoor-sports",async(req,res)=>{
+    const products = await Products.find({ category: "outdoor-sports" });
+    const category="OUTDOOR SPORTS"
+    res.render("categoryProducts.ejs",{products,category});
+})
+
 
 //Reviews
 //adding a new review

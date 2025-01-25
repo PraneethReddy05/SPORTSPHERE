@@ -100,11 +100,12 @@ footer{
 .category-item {
     display: flex;
     padding: 20px;
-    height: 150px;
+    height: 170px;
+    width: 145px;
     flex: 1; /* Allow equal space for each category */
     max-width: 200px; /* Limit the width of each category */
     text-align: center; /* Center the text inside the div */
-    background-color: #2f2f2f; /* Light background for better visibility */
+    background-color: #dadada; /* Light background for better visibility */
     border-radius: 8px; /* Add rounded corners */
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for better design */
 }
@@ -114,7 +115,8 @@ footer{
     justify-content: center;
     align-items: center;
     font-size: 1.5rem;
-    color: #d3d3d3;
+    color: #000000;
+    font-size: 20px;
 }
 
 /* New Product form */

@@ -35,35 +35,94 @@
     </div>
 
     <!-- browse by category -->
-    <div class="row mt-3 mb-3 justify-content-center">
-      <h3 class="col-3 offset-1">Browse By Category</h3>
+    <div class="row mt-5 mb-3 justify-content-center ms-5">
+      <h3 class="ms-4">Browse By Category</h3>
     </div>
     <div class="mt-3 mb-3">
       <div class="row categories">
-        <a href="/category/sports-equipment" class="col-2 ">
-          <div class="category-item sports-equipment justify-content-center">
-            <h2>Equipment</h2>
-          </div>
-        </a>
-        <a href="/category/apparel" class="col-2">
-          <div class="category-item apparel">
-            <h2>Apparel</h2>
-          </div>
-        </a>
-        <a href="/category/footwear" class="col-2">
-          <div class="category-item footwear">
-            <h2>Footwear</h2>
-          </div>
-        </a>
-        <a href="/category/accessories" class="col-2">
-          <div class="category-item accessories">
-            <h2>Accessories</h2>
-          </div>
-        </a>
+        <div class="category-item sports-equipment justify-content-center">
+          <a href="/category/sports-equipment" style="width: 100%;" class="col-2 mt-2">
+          <img src="https://cdn-icons-png.flaticon.com/512/4163/4163679.png" style="width: 50%;" alt="">
+          <h2>Equipment</h2>
+          </a>
+        </div>
+
+        <div class="category-item justify-content-center">
+          <a href="/category/apparel" style="width: 100%;" class="col-2 mt-2">
+          <img src="https://cdn-icons-png.flaticon.com/512/1867/1867631.png" style="width: 50%;" alt="">
+          <h2>Apparel</h2>
+          </a>
+        </div>
+        <div class="category-item justify-content-center">
+          <a href="/category/footwear" style="width: 100%;" class="col-2 mt-2">
+          <img src="https://cdn-icons-png.flaticon.com/512/2043/2043907.png" style="width: 50%;" alt="">
+          <h2>Footwear</h2>
+          </a>
+        </div>
+        <div class="category-item justify-content-center">
+          <a href="/category/accessories" style="width: 100%;" class="col-2 mt-2">
+          <img src="https://cdn-icons-png.flaticon.com/512/9296/9296543.png" style="width: 50%;" alt="">
+          <h2>Accessories</h2>
+          </a>
+        </div>
+        <div class="category-item justify-content-center">
+          <a href="/category/fitness-gear" style="width: 100%;" class="col-2 mt-2">
+          <img src="https://cdn-icons-png.flaticon.com/512/3043/3043888.png" style="width: 50%;" alt="">
+          <h2>Fitness Gear</h2>
+          </a>
+        </div>
+        <div class="category-item justify-content-center mb-5">
+          <a href="/category/outdoor-sports" style="width: 100%;" class="col-2 mt-2">
+          <img src="https://cdn-icons-png.flaticon.com/512/5064/5064012.png" style="width: 50%;" alt="">
+          <h2>Outdoor Sports</h2>
+          </a>
+        </div>
 
       </div>
     </div>
 
-    
+    <!-- products -->
+    <div class="container mt-5">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Featured Products</h3>
+        <a href="/products" class="btn btn-primary">View All</a>
+      </div>
+      <div class="product-row d-flex overflow-auto gap-5">
+        <!-- Each product card -->
+        <% for(let product of allProducts){ %>
+          <a href="/products/<%= product._id%>" class="product-link">
+            <div class="card col mb-4" style="width: 18rem;height: 30rem;">
+              <img src="<%=product.images%>" class="card-img-top" style="height: 20rem;" alt="">
+              <div class="card-body border-top">
+                <h5 class="card-title">
+                  <%=product.name %>
+                </h5>
+                <p class="card-text">
+                  &#8377;<%= product.price %>
+                </p>
+
+              </div>
+            </div>
+          </a>
+          <% } %>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center mb-3 col-6 offset-3">
+        <div class="text-center">
+          <img src="https://cdn-icons-png.flaticon.com/512/5627/5627211.png" alt="" style="height: 7rem;">
+          <p style="font-size: 15px; font-weight:600;" >FREE AND FAST DELIVERY</p>
+        </div>
+        <div class="text-center">
+          <img src="https://cdn-icons-png.flaticon.com/512/1067/1067566.png" alt="" style="height: 5rem;">
+          <p style="font-size: 15px; font-weight:600;" class="mt-3" >FREE AND FAST DELIVERY</p>
+        </div>
+        <div class="text-center">
+          <img src="https://cdn-icons-png.flaticon.com/512/2438/2438078.png" alt="" style="height: 5rem;">
+          <p style="font-size: 15px; font-weight:600;" class="mt-3">FREE AND FAST DELIVERY</p>
+        </div>
+      </div>
+    </div>
 
   </body>
