@@ -108,6 +108,7 @@ app.use((req,res,next)=>{
 
 //home route
 app.get("/home", async (req, res) => {
+    
     res.render("home.ejs");
     // res.send("home to be implemented")
 })
