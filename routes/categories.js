@@ -28,4 +28,15 @@ router.get("/accessories",async(req,res)=>{
     res.render("categoryProducts.ejs",{products,category});
 })
 
+router.get("/fitness-gear",async(req,res)=>{
+    const products = await Products.find({ category: "fitness-gear" });
+    const category="FITNESS_GEAR"
+    res.render("categoryProducts.ejs",{products,category});
+})
+router.get("/outdoor-sports",async(req,res)=>{
+    const products = await Products.find({ category: "outdoor-sports" });
+    const category="OUTDOOR SPORTS"
+    res.render("categoryProducts.ejs",{products,category});
+})
+
 module.exports = router;
