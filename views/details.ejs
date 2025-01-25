@@ -28,7 +28,7 @@
                     <div class="col-5 offset-2">
                         <div class="d-flex flex-column gap-2 ">
 
-                            <% if(currUser){if(currUser.role !="Seller" ){ %>
+                            <% if(currUser){if(currUser.role !="Seller" ){ if(product.stock>0){ %>
                                 <form action="/checkout" method="get">
                                     <button class="btn btn-primary fs-5" style="width: 100%;">Buy now</button><br>
                                 </form>
@@ -40,12 +40,11 @@
                                         <i class="mt-1 fa-solid fa-cart-shopping"></i>
                                     </button>
                                 </form>
-                                <% }} %>
+                                <% }}} %>
                         </div>
                     </div>
                 </div>
-                // Seller info
-                // reviews etc
+
             </div>
         </div>
         <div class="row">
