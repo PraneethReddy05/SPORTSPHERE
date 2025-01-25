@@ -104,26 +104,9 @@ app.use("/seller",sellers);
 
 //home route
 app.get("/home", async (req, res) => {
-<<<<<<< HEAD
     const allProducts = await Products.find({});
     res.render("home.ejs",{allProducts});
     // res.send("home to be implemented")
-})
-
-//view all products
-app.get("/products", async (req, res) => {
-    const allProducts = await Products.find({});
-    res.render("products.ejs", { allProducts });
-})
-
-//product details
-app.get("/products/:id", async (req, res) => {
-    let { id } = req.params;
-    let product = await Products.findById(id).populate({path:"reviews",populate:{path:"author"}});
-    res.render("details.ejs", { product });
-=======
-    res.render("home.ejs");
->>>>>>> 328bf80ef11c81c5f3dd448d24a5b3cef44e0537
 })
 
 //contact
@@ -209,47 +192,6 @@ app.get("/logout",(req,res)=>{
     })
 })
 
-<<<<<<< HEAD
-//Categories
-
-app.get("/category/sports-equipment",async (req,res)=>{
-    const products = await Products.find({ category: "sports-equipment" });
-    const category="SPORTS-EQUIPMENT"
-    res.render("categoryProducts.ejs",{products,category});
-
-})
-
-app.get("/category/apparel",async(req,res)=>{
-    const products = await Products.find({ category: "apparel" });
-    const category="APPAREL"
-    res.render("categoryProducts.ejs",{products,category});
-})
-
-app.get("/category/footwear",async(req,res)=>{
-    const products = await Products.find({ category: "footwear" });
-    const category="FOOTWEAR"
-    res.render("categoryProducts.ejs",{products,category});
-})
-
-app.get("/category/accessories",async(req,res)=>{
-    const products = await Products.find({ category: "accessories" });
-    const category="ACCESSORIES"
-    res.render("categoryProducts.ejs",{products,category});
-})
-app.get("/category/fitness-gear",async(req,res)=>{
-    const products = await Products.find({ category: "fitness-gear" });
-    const category="FITNESS_GEAR"
-    res.render("categoryProducts.ejs",{products,category});
-})
-app.get("/category/outdoor-sports",async(req,res)=>{
-    const products = await Products.find({ category: "outdoor-sports" });
-    const category="OUTDOOR SPORTS"
-    res.render("categoryProducts.ejs",{products,category});
-})
-
-=======
->>>>>>> 328bf80ef11c81c5f3dd448d24a5b3cef44e0537
-
 //404 status error
 app.all("*", (req, res, next) => {
     next(new ExpressError(404, "Page not found!"));
@@ -258,7 +200,7 @@ app.all("*", (req, res, next) => {
 app.use((err, req, res, next) => {
     let { statusCode = 500, message="Something went wrong!" } = err;
     // res.status(statusCode).send(message);
-    console.log(err.message);
+    // console.log(err.message);
     res.render("error.ejs",{err});
 })
 
