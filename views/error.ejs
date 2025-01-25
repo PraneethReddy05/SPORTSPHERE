@@ -1,0 +1,16 @@
+<% layout("/layouts/boilerplate") -%>
+<!-- <div class="row">
+    <div class="alert alert-danger col-6 offset-3 mt-3" role="alert">
+        <h5> <%= err.message %> </h5>
+    </div>
+</div> -->
+<div class="row text-center mt-5">
+    <p class="fw-bold" style="font-size:4rem;"><%= err.statusCode %> <%= err.message %></p>
+    <p>Error, you may go to home page</p>
+    <div class="row mt-5 mb-5">
+        <form action="/home" method="get">
+            <button class="btn btn-dark red-button mt-2 mb-2">back to home page</button>
+        </form>
+    </div>
+    <div style="height: 20vh;"></div>
+</div>

@@ -32,7 +32,7 @@
                                 <form action="/checkout" method="get">
                                     <button class="btn btn-primary fs-5" style="width: 100%;">Buy now</button><br>
                                 </form>
-                                <form action="/cart/<%= product._id%>/add" method="post">
+                                <form action="/user/cart/<%= product._id%>/add" method="post">
                                     <label for="quantity"></label>
                                     <button class="btn btn-primary fs-5 d-flex justify-content-center gap-3"
                                         style="width: 100%;">
@@ -53,7 +53,7 @@
                 <hr>
                 <div class="col-6 offset-3 mt-2 mb-2">
                     <h4 class="offset-5 mt-5">Leave a review</h4>
-                    <form class="needs-validation" action="/products/<%=product._id%>/review" method="post" novalidate>
+                    <form class="needs-validation" action="/products/<%=product._id%>/reviews" method="post" novalidate>
                         <div>
                             <label for="rating" class="form-label">Rating</label>
                             <fieldset class="starability-slot">
@@ -86,7 +86,7 @@
         </div>
         <div class="row">
             <% if(product.reviews.length){ %>
-                <div class="col-6 offset-3 mt-3 mb-3">
+                <div class="col-6 offset-3 mt-3 mb-5">
                     <h4 class="offset-5 mt-5">Reviews</h4>
                     <div class="row">  
                         <% for(let review of product.reviews){ %>

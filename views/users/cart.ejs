@@ -8,6 +8,7 @@
         <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 ms-3 mb-5">
             <% let totalAmount = 0; %>
             <% for(let product of items){ %>
+                <%console.log(product);%>
                 <% totalAmount+=product.productId.price*product.quantity %>
                 <a href="/products/<%= product.productId._id%>" class="product-link">
                     <div class="card col mb-4" style="width: 18rem;height: 30rem;">
