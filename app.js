@@ -9,24 +9,33 @@ const Products = require("./models/Products.js");
 const User = require("./models/Users.js");
 const Seller = require("./models/Seller.js");
 const Cart=require("./models/Cart.js");
-const Review=require("./models/Reviews.js");
+const Review = require("./models/Reviews.js");
 const session = require("express-session");
 const flash=require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const Razorpay = require("razorpay");
 const Product = require("./models/Products.js");
+const ExpressError = require("./utils/ExpressError.js");
+const wrapAsync = require("./utils/WrapAsync.js");
+
+
+//routers
+const category = require("./routes/categories.js");
+const reviews = require("./routes/reviews.js");
+const products = require("./routes/products.js");
+
+//mongoDB connection
 async function main() {
     await mongoose.connect("mongodb://127.0.0.1:27017/SPORTSPHERE")
 }
-
 main().then(() => {
     console.log("Connected to DB");
 }).catch(err => {
     console.log(err);
 })
 
-
+//middlewares
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
@@ -86,43 +95,14 @@ app.use((req,res,next)=>{
     next();
 });
 
-//middlewares for handling unautorized access
-// function ensureAuthenticated(req, res, next) {
-//     if (req.isAuthenticated()) {
-//         return next();
-//     }
-//     req.flash('error', 'You must be logged in!');
-//     res.redirect('/login');
-// }
-
-// function ensureRole(role) {
-//     return (req, res, next) => {
-//         if (req.isAuthenticated() && req.user.role === role) {
-//             return next();
-//         }
-//         req.flash('error', 'Access denied!');
-//         res.redirect('/login');
-//     };
-// }
-
+//category router
+app.use("/category",category);
+app.use("/products/:id/reviews",reviews);
+app.use("/products",products);
 
 //home route
 app.get("/home", async (req, res) => {
     res.render("home.ejs");
-    // res.send("home to be implemented")
-})
-
-//view all products
-app.get("/products", async (req, res) => {
-    const allProducts = await Products.find({});
-    res.render("products.ejs", { allProducts });
-})
-
-//product details
-app.get("/products/:id", async (req, res) => {
-    let { id } = req.params;
-    let product = await Products.findById(id).populate({path:"reviews",populate:{path:"author"}});
-    res.render("details.ejs", { product });
 })
 
 //contact
@@ -137,20 +117,20 @@ app.get("/about", (req, res) => {
 
 
 //signup //user
-app.get("/signup/user", (req, res) => {
+app.get("/user/signup", (req, res) => {
     res.render("users/signup.ejs")
 })
 //signup //seller
-app.get("/signup/seller", (req, res) => {
+app.get("/seller/signup", (req, res) => {
     res.render("sellers/signup.ejs")
 })
 
 //login //user
-app.get("/login/user", (req, res) => {
+app.get("/user/login", (req, res) => {
     res.render("users/login.ejs")
 })
 //login //seller
-app.get("/login/seller", (req, res) => {
+app.get("/seller/login", (req, res) => {
     res.render("sellers/login.ejs")
 })
 
@@ -176,7 +156,7 @@ app.get("/search",async(req,res)=>{
 })
  
 //signup user
-app.post("/signup/user", async (req, res) => {
+app.post("/user/signup", async (req, res) => {
     try {
         // console.log("Signup data: ", req.body);
 
@@ -185,7 +165,7 @@ app.post("/signup/user", async (req, res) => {
         // console.log(newUser);
         const registeredUser=await User.register(newUser, password);
         const newCart=new Cart({userId:registeredUser._id});
-        console.log(newCart);
+        // console.log(newCart);
         req.login(registeredUser,(err)=>{
             if(err){
                 console.log(err);
@@ -201,7 +181,7 @@ app.post("/signup/user", async (req, res) => {
 })
 
 
-app.post("/login/user",passport.authenticate('user-local', {failureRedirect: '/login/user',failureFlash: true,}),async(req, res) => {
+app.post("/user/login",passport.authenticate('user-local', {failureRedirect: '/user/login',failureFlash: true,}),async(req, res) => {
     req.flash('success', 'Successfully logged in as user!');
     res.redirect("/home");
 });
@@ -212,7 +192,7 @@ app.post("/login/user",passport.authenticate('user-local', {failureRedirect: '/l
 // });
 
 //signup seller
-app.post("/signup/seller", async (req, res) => {
+app.post("/seller/signup", async (req, res) => {
     try {
 
         let { username,name,storeName,email, phone, street, pincode, city, state, password } = req.body;
@@ -229,13 +209,13 @@ app.post("/signup/seller", async (req, res) => {
         })
     }catch(err){
         req.flash("error",err.message);
-        res.redirect("/signup/user");
+        res.redirect("/home");
         console.log(err);
     }
 })
 
 //login seller
-app.post("/login/seller",passport.authenticate('seller-local', {failureRedirect: '/login/seller',failureFlash: true,}),async(req, res) => {
+app.post("/seller/login",passport.authenticate('seller-local', {failureRedirect: '/seller/login',failureFlash: true,}),async(req, res) => {
         req.flash('success', 'Successfully logged in as seller!');
         res.redirect('/seller/dashboard');
     }
@@ -268,31 +248,6 @@ app.post("/seller/product/new",async(req,res)=>{
     // console.log(newProduct);
     // console.log(req.body);
 });
-
-//edit product
-
-app.get("/products/:productId/edit",async(req,res)=>{
-    let {productId}=req.params;
-    // console.log(productId);
-    let product= await Products.findById(productId);
-    // console.log(product);
-    res.render("sellers/edit.ejs",{product});
-});
-
-//edit product post
-
-app.put("/products/:productId/edit",async (req,res)=>{
-    let {productId}=req.params;
-    await Products.findByIdAndUpdate(productId,{...req.body.product});
-    res.redirect("/seller/dashboard");
-})
-
-//product delete
-app.delete("/products/:productId",async(req,res)=>{
-    let {productId}=req.params;
-    await Products.findByIdAndDelete(productId);
-    res.redirect("/seller/dashboard");
-})
 
 //add to cart
 app.post("/cart/:productId/add",async(req,res)=>{
@@ -382,55 +337,17 @@ app.get("/logout",(req,res)=>{
     })
 })
 
-//Categories
 
-app.get("/category/sports-equipment",async (req,res)=>{
-    const products = await Products.find({ category: "sports-equipment" });
-    const category="SPORTS-EQUIPMENT"
-    res.render("categoryProducts.ejs",{products,category});
-
-})
-
-app.get("/category/apparel",async(req,res)=>{
-    const products = await Products.find({ category: "apparel" });
-    const category="APPAREL"
-    res.render("categoryProducts.ejs",{products,category});
-})
-
-app.get("/category/footwear",async(req,res)=>{
-    const products = await Products.find({ category: "footwear" });
-    const category="FOOTWEAR"
-    res.render("categoryProducts.ejs",{products,category});
-})
-
-app.get("/category/accessories",async(req,res)=>{
-    const products = await Products.find({ category: "sports-equipment" });
-    const category="ACCESSORIES"
-    res.render("categoryProducts.ejs",{products,category});
-})
-
-//Reviews
-//adding a new review
-app.post("/products/:id/review", async(req,res)=>{
-    let product = await Product.findById(req.params.id);
-    // console.log(req.body.review);
-    let newReview = new Review(req.body.review);
-    newReview.author = req.user._id;
-    console.log(newReview);
-    product.reviews.push(newReview);
-    await newReview.save();
-    await product.save();
-    // console.log(listing);
-    req.flash("success","New review created!");
-    res.redirect(`/products/${product._id}`);
+//404 status error
+app.all("*", (req, res, next) => {
+    next(new ExpressError(404, "Page not found!"));
 });
-//deleting reviews
-app.delete("/products/:id/reviews/:reviewId", async(req,res)=>{
-    let { id, reviewId} = req.params;
-    await Product.findByIdAndUpdate(id,{$pull:{reviews:reviewId}});
-    await Review.findByIdAndDelete(reviewId);
-    req.flash("success","review successfully deleted!");
-    res.redirect(`/products/${id}`);
+//Error handling middleware
+app.use((err, req, res, next) => {
+    let { statusCode = 500, message="Something went wrong!" } = err;
+    // res.status(statusCode).send(message);
+    // console.log(err.message);
+    res.render("error.ejs",{err});
 })
 
 app.listen(8080, (req, res) => {
