@@ -1,9 +1,9 @@
 <%- layout('/layouts/boilerplate') %>
 <div class="container mt-5">
     <h1 class="text-center mb-4">Checkout</h1>
-    <div class="row">
+    <div class="row mt-3 mb-3 text-center">
         <!-- User Address -->
-        <div class="col-md-6 mb-4">
+        <div class="col-md-6 mb-4 text-start">
             <h3>Shipping Address</h3>
             <p>
                 <strong><%= user.name %></strong><br>
@@ -25,7 +25,7 @@
 
     <!-- Payment Method -->
     <div>
-        <button class="btn btn-primary" id="place-order-btn">Place Order</button>
+        <button class="btn btn-primary mb-5" id="place-order-btn">Place Order</button>
     </div>
 </div>
 

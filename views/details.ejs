@@ -27,18 +27,23 @@
                 <div class="row border-top mt-4 pt-4">
                     <div class="col-5 offset-2">
                         <div class="d-flex flex-column gap-2 ">
-
                             <% if(currUser){if(currUser.role !="Seller" ){ if(product.stock>0){ %>
                                 <form action="/checkout" method="get">
                                     <button class="btn btn-primary fs-5" style="width: 100%;">Buy now</button><br>
                                 </form>
                                 <form action="/user/cart/<%= product._id%>/add" method="post">
-                                    <label for="quantity"></label>
-                                    <button class="btn btn-primary fs-5 d-flex justify-content-center gap-3"
-                                        style="width: 100%;">
-                                        Add to cart
-                                        <i class="mt-1 fa-solid fa-cart-shopping"></i>
-                                    </button>
+                                    <div class="d-flex flex-column gap-1">
+                                        <label for="quantity"></label>
+                                        <div class="d-flex gap-2">
+                                            <button class="btn btn-primary fs-5" style="width: 3rem;" id="minus">-</button>
+                                            <input type="number" class="form-control" id="count" name="quantity" value="1" min="1" max="<%= product.stock %>">
+                                            <button class="btn btn-primary fs-5" style="width: 3rem;" id="plus">+</button>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary fs-5 d-flex justify-content-center gap-3" style="width: 100%;">
+                                            Add to cart
+                                            <i class="mt-1 fa-solid fa-cart-shopping"></i>
+                                        </button>
+                                    </div>
                                 </form>
                                 <% }}} %>
                         </div>
@@ -106,4 +111,22 @@
                 </div>
                 <% } %>
         </div>
+    <script>
+        let minus = document.getElementById("minus");
+        let plus = document.getElementById("plus");
+        let count = document.getElementById("count");
+        // let product = JSON.parse('<%= JSON.stringify(product).replace(/'/g, "\\'") %>');
+        // console.log(product);
+        minus.addEventListener("click",(event)=>{
+            event.preventDefault();
+            let cnt = count.value;
+            count.value = (cnt > 1)?cnt-1:0;
+        })
+        plus.addEventListener("click",(event)=>{
+            event.preventDefault();
+            let cnt = parseInt(count.value);
+            // console.log(product.stock);
+            count.value = (cnt < 5) ? parseInt(cnt)+1 :cnt ;
+        })
+    </script>
     </body>

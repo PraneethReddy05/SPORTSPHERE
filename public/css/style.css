@@ -201,3 +201,13 @@ footer{
   }
   
 /*  experimental card effect end */
+/* flash */
+/* .container-fluid{
+    position: relative;
+}
+.alert{
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+} */

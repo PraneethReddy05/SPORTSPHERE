@@ -1,0 +1,79 @@
+<% layout("/layouts/boilerplate") -%>
+<div class="container">
+    <div class="mt-5 text-center mb-5">
+        <h1>Update Cart</h1>
+    </div>
+
+    <form action="/user/cart/update" method="post">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Product</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Subtotal</th>
+                    <th scope="col">Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% items.forEach((item) => { %>
+                    <tr>
+                        <td>
+                            <img src="<%= item.productId.images%>" onerror="this.onerror = null; this.src ='/resources/default.jpg';" width="50">
+                            <%= item.productId.name %>
+                        </td>
+                        <td>$<%= item.productId.price %></td>
+                        <td>
+                            <input type="hidden" name="productId[]" value="<%= item.productId._id %>">
+                            <input type="number" name="quantity[]" class="form-control quantity" value="<%= item.quantity %>" min="1" max="<%= item.productId.stock %>">
+                        </td>
+                        <td class="subtotal">$<%= item.productId.price * item.quantity %></td>
+                        <td>
+                            <button type="button" class="remove-btn btn mt-2" data-id="<%= item.productId._id %>">
+                                <i class="fas fa-times" style="color: white; font-size: 18px;"></i>
+                            </button>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+        <div class="col-4 offset-6 mt-3 mb-4">
+            <button type="submit" class="btn mt-2">Update Cart</button>
+        </div>
+    </form>
+</div>
+<!-- Include jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Auto update subtotal on quantity change
+        $(document).on("change", ".quantity", function () {
+            let row = $(this).closest("tr");
+            let price = parseFloat(row.find("td:nth-child(2)").text().replace("$", "")) || 0;
+            let quantity = parseInt($(this).val()) || 1;
+            let subtotal = price * quantity;
+            row.find(".subtotal").text(`$${subtotal.toFixed(2)}`);
+        });
+
+        // Remove item from cart with animation
+        $(document).on("click", ".remove-btn", function () {
+            $(this).closest("tr").fadeOut(300, function () {
+                $(this).remove();
+            });
+            let productId = $(this).data("id");
+            let row = $("#row-" + productId); // Get the row of the product
+            $.ajax({
+                url: "/user/cart/remove",  // Backend route
+                type: "POST",
+                data: { productId: productId },
+                success: function (response) {
+                    row.remove(); // Remove the row from UI
+                },
+                error: function (err) {
+                    console.error("Error removing item:", err);
+                }
+            });
+        });
+    });
+</script>
