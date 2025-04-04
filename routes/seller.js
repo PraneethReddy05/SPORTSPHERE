@@ -5,6 +5,7 @@ const Cart=require("../models/Cart.js");
 const User = require("../models/Users.js");
 const Seller = require("../models/Seller.js");
 const passport = require("passport");
+const {isSellerLoggedIn,saveRedirectUrl} = require("../middleware.js");
 
 //signup //seller
 router.get("/signup", (req, res) => {
@@ -40,14 +41,18 @@ router.post("/signup", async (req, res) => {
 })
 
 //login seller
-router.post("/login",passport.authenticate('seller-local', {failureRedirect: '/seller/login',failureFlash: true,}),async(req, res) => {
+router.post("/login",
+    saveRedirectUrl,
+    passport.authenticate('seller-local', {failureRedirect: '/seller/login',failureFlash: true,}),
+    async(req, res) => {
+        let redirectUrl = res.locals.redirectUrl || '/seller/dashboard';
         req.flash('success', 'Successfully logged in as seller!');
-        res.redirect('/seller/dashboard');
+        res.redirect(redirectUrl);
     }
 );
 
 //Seller dashboard
-router.get("/dashboard", async (req,res)=>{
+router.get("/dashboard",isSellerLoggedIn, async (req,res)=>{
     console.log(req.user);
     // const {_id} = req.user;
     const seller = await Seller.findById(req.user._id).populate("products");
@@ -56,14 +61,14 @@ router.get("/dashboard", async (req,res)=>{
 })
 
 //seller adding new product
-router.get("/product/new",(req,res)=>{
+router.get("/product/new",isSellerLoggedIn,(req,res)=>{
     // let {id} = req.params;
     // console.log(id);
     res.render("sellers/newProductForm.ejs");
 });
 
 //new product
-router.post("/product/new",async(req,res)=>{
+router.post("/product/new",isSellerLoggedIn,async(req,res)=>{
     // let {id} = req.params;
     let newProduct = new Products(req.body.product);
     let seller = await Seller.findByIdAndUpdate(req.user._id,{ $push: { products: newProduct } });

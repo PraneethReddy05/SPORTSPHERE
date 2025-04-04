@@ -4,7 +4,7 @@ const Products = require("../models/Products.js");
 const Cart=require("../models/Cart.js");
 const User = require("../models/Users.js");
 const passport = require("passport");
-
+const {isUserLoggedIn,saveRedirectUrl} = require("../middleware.js");
 
 //signup //user
 router.get("/signup", (req, res) => {
@@ -36,12 +36,17 @@ router.post("/signup", async (req, res) => {
         console.log(err.message);
     }
 })
-router.post("/login",passport.authenticate('user-local', {failureRedirect: '/user/login',failureFlash: true,}),async(req, res) => {
-    req.flash('success', 'Successfully logged in as user!');
-    res.redirect("/home");
-});
+router.post("/login",
+    saveRedirectUrl, // middleware for redirection
+    passport.authenticate('user-local', {failureRedirect: '/user/login',failureFlash: true,}),
+    async(req, res) => {
+        let redirectUrl = res.locals.redirectUrl || "/home";
+        req.flash('success', 'Successfully logged in as user!');
+        res.redirect(redirectUrl);
+    }
+);
 //add to cart
-router.post("/cart/:productId/add",async(req,res)=>{
+router.post("/cart/:productId/add",isUserLoggedIn,async(req,res)=>{
     let userId = req.user._id;
     let { productId } = req.params;
     let { quantity } = req.body;
@@ -64,7 +69,7 @@ router.post("/cart/:productId/add",async(req,res)=>{
     res.redirect(`/products/${productId}`);
 })
 // cart get
-router.get("/cart", async(req, res) => {
+router.get("/cart",isUserLoggedIn, async(req, res) => {
     let userId=req.user._id;
     let cart=await Cart.findOne({userId}).populate("items.productId");
     // console.log(cart);
@@ -75,7 +80,7 @@ router.get("/cart", async(req, res) => {
 
 });
 //update page
-router.get("/cart/update",async(req,res)=>{
+router.get("/cart/update",isUserLoggedIn,async(req,res)=>{
     let userId=req.user._id;
     let cart=await Cart.findOne({userId}).populate("items.productId");
     // console.log(cart);
@@ -85,7 +90,7 @@ router.get("/cart/update",async(req,res)=>{
     res.render("users/updateCart.ejs",{items});
 })
 //update cart post
-router.post("/cart/update", async (req, res) => {
+router.post("/cart/update",isUserLoggedIn, async (req, res) => {
     let userId = req.user._id;
     let { productId, quantity } = req.body;
     let cart = await Cart.findOne({ userId });
@@ -101,12 +106,7 @@ router.post("/cart/update", async (req, res) => {
     await cart.save();
     res.redirect("/user/cart");
 });
-//remove product from cart
-// router.post("/cart/remove",async(req,res)=>{
-    // console.log(req.body);
-    // console.log(req.user._id);
-// });
-router.post("/cart/remove", async (req, res) => {
+router.post("/cart/remove",isUserLoggedIn, async (req, res) => {
     let userId = req.user._id;
     let { productId } = req.body;
     console.log(req.body);

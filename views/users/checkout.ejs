@@ -36,7 +36,6 @@
     document.getElementById("place-order-btn").addEventListener("click", async () => {
         try {
             const totalAmount = parseFloat(document.getElementById("place-order-btn").getAttribute('data-amount'));
-            
             // Send a POST request to create the order
             const response = await fetch("/create-order", {
                 method: "POST",
@@ -45,17 +44,14 @@
                 },
                 body: JSON.stringify({ totalAmount }),
             });
-
             const result = await response.json();
-
             if (!result.success) {
                 alert("Error creating order. Please try again.");
                 return;
             }
-
             // Initialize Razorpay Checkout
             const options = {
-                key: "rzp_test_8RlMHbMDNhfWw4", // Replace with Razorpay Key ID
+                key: "rzp_test_BxN4zyfawxKOr3", // Replace with Razorpay Key ID
                 amount: totalAmount * 100, // Convert to paise
                 currency: "INR",
                 order_id: result.orderId,
@@ -74,7 +70,6 @@
                     color: "#3399cc",
                 },
             };
-
             const razorpay = new Razorpay(options);
             razorpay.open();
         } catch (error) {

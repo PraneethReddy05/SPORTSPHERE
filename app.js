@@ -38,6 +38,7 @@ main().then(() => {
 //middlewares
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.engine('ejs', ejsMate);
@@ -83,8 +84,8 @@ passport.deserializeUser(async ({ id, role }, done) => {
 
 //razorpay instance
 const razorpayInstance = new Razorpay({
-    key_id: "rzp_test_8RlMHbMDNhfWw4",
-    key_secret: "015SxpmJtj6mkX5TZGAKLJim",
+    key_id: "rzp_test_BxN4zyfawxKOr3",
+    key_secret: "v8VVhznJpGfoc8frEX3tViFO",
 });
 
 //flash messages middleware
@@ -153,10 +154,8 @@ app.get("/checkout",async(req,res)=>{
 })
 
 //razorpay
-app.post("/create-order", async (req, res) => {
+app.post("/create-order", async (req,res) => {
     const { totalAmount } = req.body; // Total amount from the request body
-    console.log(req.body);
-
     try {
         const options = {
             amount: totalAmount * 100, // Razorpay requires the amount in paise
@@ -166,19 +165,22 @@ app.post("/create-order", async (req, res) => {
 
         // Create the order using Razorpay SDK
         const order = await razorpayInstance.orders.create(options);
-
-        res.status(200).json({
+        // console.log(order);
+        res.status(200).send({
             success: true,
             orderId: order.id, // Send the Razorpay order ID to the frontend
         });
     } catch (error) {
         console.error("Error creating Razorpay order:", error);
-        res.status(500).json({
+        res.status(500).send({
             success: false,
             message: "Failed to create order. Please try again.",
         });
     }
 });
+app.post("/pay",async(req,res)=>{
+    res.status(200).send(req.body);
+})
 
 
 //logout
@@ -196,14 +198,13 @@ app.get("/logout",(req,res)=>{
 app.all("*", (req, res, next) => {
     next(new ExpressError(404, "Page not found!"));
 });
+
 //Error handling middleware
 app.use((err, req, res, next) => {
     let { statusCode = 500, message="Something went wrong!" } = err;
-    // res.status(statusCode).send(message);
-    // console.log(err.message);
     res.render("error.ejs",{err});
 })
-
+//http://localhost:8080/order-success -payment success
 app.listen(8080, (req, res) => {
     console.log("Listening on port 8080");
 })
