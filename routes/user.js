@@ -5,6 +5,7 @@ const Cart=require("../models/Cart.js");
 const User = require("../models/Users.js");
 const passport = require("passport");
 const {isUserLoggedIn,saveRedirectUrl} = require("../middleware.js");
+const WrapAsync = require("../utils/WrapAsync.js");
 
 //signup //user
 router.get("/signup", (req, res) => {
@@ -15,7 +16,7 @@ router.get("/login", (req, res) => {
     res.render("users/login.ejs")
 })
 //signup user
-router.post("/signup", async (req, res) => {
+router.post("/signup", WrapAsync(async (req, res) => {
     try {
         let { username,name, email, phone, street, pincode, city, state, password } = req.body;
         let newUser = new User ({ username,name, email, phone, address: { street, pincode, city, state } });
@@ -35,18 +36,18 @@ router.post("/signup", async (req, res) => {
         res.redirect("/home");
         console.log(err.message);
     }
-})
+}));
 router.post("/login",
     saveRedirectUrl, // middleware for redirection
     passport.authenticate('user-local', {failureRedirect: '/user/login',failureFlash: true,}),
-    async(req, res) => {
+    WrapAsync(async(req, res) => {
         let redirectUrl = res.locals.redirectUrl || "/home";
         req.flash('success', 'Successfully logged in as user!');
         res.redirect(redirectUrl);
     }
-);
+));
 //add to cart
-router.post("/cart/:productId/add",isUserLoggedIn,async(req,res)=>{
+router.post("/cart/:productId/add",isUserLoggedIn,WrapAsync(async(req,res)=>{
     let userId = req.user._id;
     let { productId } = req.params;
     let { quantity } = req.body;
@@ -67,9 +68,9 @@ router.post("/cart/:productId/add",isUserLoggedIn,async(req,res)=>{
     await cart.save();
     req.flash("success", `${quantity} items added to cart!`);
     res.redirect(`/products/${productId}`);
-})
+}));
 // cart get
-router.get("/cart",isUserLoggedIn, async(req, res) => {
+router.get("/cart",isUserLoggedIn, WrapAsync(async(req, res) => {
     let userId=req.user._id;
     let cart=await Cart.findOne({userId}).populate("items.productId");
     // console.log(cart);
@@ -78,9 +79,9 @@ router.get("/cart",isUserLoggedIn, async(req, res) => {
     let items=cart.items;
     res.render("users/cart.ejs",{items});
 
-});
+}));
 //update page
-router.get("/cart/update",isUserLoggedIn,async(req,res)=>{
+router.get("/cart/update",isUserLoggedIn,WrapAsync(async(req,res)=>{
     let userId=req.user._id;
     let cart=await Cart.findOne({userId}).populate("items.productId");
     // console.log(cart);
@@ -88,9 +89,9 @@ router.get("/cart/update",isUserLoggedIn,async(req,res)=>{
         cart=new Cart({userId});
     let items=cart.items;
     res.render("users/updateCart.ejs",{items});
-})
+}));
 //update cart post
-router.post("/cart/update",isUserLoggedIn, async (req, res) => {
+router.post("/cart/update",isUserLoggedIn, WrapAsync(async (req, res) => {
     let userId = req.user._id;
     let { productId, quantity } = req.body;
     let cart = await Cart.findOne({ userId });
@@ -105,8 +106,8 @@ router.post("/cart/update",isUserLoggedIn, async (req, res) => {
     }
     await cart.save();
     res.redirect("/user/cart");
-});
-router.post("/cart/remove",isUserLoggedIn, async (req, res) => {
+}));
+router.post("/cart/remove",isUserLoggedIn, WrapAsync(async (req, res) => {
     let userId = req.user._id;
     let { productId } = req.body;
     console.log(req.body);
@@ -123,5 +124,5 @@ router.post("/cart/remove",isUserLoggedIn, async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: "Server error" });
     }
-});
+}));
 module.exports = router;

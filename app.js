@@ -24,6 +24,7 @@ const reviews = require("./routes/reviews.js");
 const products = require("./routes/products.js");
 const users = require("./routes/user.js");
 const sellers = require("./routes/seller.js");
+const WrapAsync = require("./utils/WrapAsync.js");
 
 //mongoDB connection
 async function main() {
@@ -104,11 +105,11 @@ app.use("/user",users);
 app.use("/seller",sellers);
 
 //home route
-app.get("/home", async (req, res) => {
+app.get("/home",WrapAsync(async(req, res) => {
     const allProducts = await Products.find({});
     res.render("home.ejs",{allProducts});
     // res.send("home to be implemented")
-})
+}));
 
 //contact
 app.get("/contact", (req, res) => {
@@ -120,27 +121,20 @@ app.get("/about", (req, res) => {
     res.send("About us page");
 })
 
-app.get("/search",async(req,res)=>{
+app.get("/search",WrapAsync(async(req,res)=>{
     let {query}=req.query;
-    console.log({query});
-
-    try{
-        const filteredProducts=await Products.find({
-            $or:[
-                {name:{$regex:query,$options:"i"}},
-                {description:{$regex:query,$options:"i"}}
-            ],
-        })
-    
-        res.render("searchProducts.ejs",{filteredProducts,query});
-    }
-    catch(err){
-        console.log(err);
-    }
-})
+    // console.log({query});
+    const filteredProducts=await Products.find({
+        $or:[
+            {name:{$regex:query,$options:"i"}},
+            {description:{$regex:query,$options:"i"}}
+        ],
+    })
+    res.render("searchProducts.ejs",{filteredProducts,query});
+}));
 
 //checkout
-app.get("/checkout",async(req,res)=>{
+app.get("/checkout",wrapAsync(async(req,res)=>{
     let userId=req.user._id;
 
     let user=await User.findById(userId);
@@ -151,10 +145,10 @@ app.get("/checkout",async(req,res)=>{
     },0);
 
     res.render("users/checkout.ejs",{user,cart,totalAmount});
-})
+}));
 
 //razorpay
-app.post("/create-order", async (req,res) => {
+app.post("/create-order", wrapAsync(async (req,res) => {
     const { totalAmount } = req.body; // Total amount from the request body
     try {
         const options = {
@@ -177,10 +171,10 @@ app.post("/create-order", async (req,res) => {
             message: "Failed to create order. Please try again.",
         });
     }
-});
-app.post("/pay",async(req,res)=>{
+}));
+app.post("/pay",wrapAsync(async(req,res)=>{
     res.status(200).send(req.body);
-})
+}));
 
 
 //logout

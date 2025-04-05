@@ -2,11 +2,11 @@ const express = require("express");
 const router = express.Router({ mergeParams: true });
 const Products = require("../models/Products.js");
 const Review = require("../models/Reviews.js");
-
+const WrapAsync = require("../utils/WrapAsync.js");
 
 //Reviews
 //adding a new review
-router.post("/", async(req,res)=>{
+router.post("/", WrapAsync(async(req,res)=>{
     let product = await Products.findById(req.params.id);
     // console.log(req.body.review);
     let newReview = new Review(req.body.review);
@@ -17,14 +17,14 @@ router.post("/", async(req,res)=>{
     await product.save();
     req.flash("success","New review created!");
     res.redirect(`/products/${product._id}`);
-});
+}));
 //deleting reviews
-router.delete("/:reviewId", async(req,res)=>{
+router.delete("/:reviewId", WrapAsync(async(req,res)=>{
     let { id, reviewId} = req.params;
     await Products.findByIdAndUpdate(id,{$pull:{reviews:reviewId}});
     await Review.findByIdAndDelete(reviewId);
     req.flash("success","review successfully deleted!");
     res.redirect(`/products/${id}`);
-})
+}));
 
 module.exports = router;
