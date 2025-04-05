@@ -9,14 +9,17 @@ const Products = require("./models/Products.js");
 const User = require("./models/Users.js");
 const Seller = require("./models/Seller.js");
 const Cart=require("./models/Cart.js");
+const Order = require("./models/Orders.js")
 const session = require("express-session");
 const flash=require("connect-flash");
 const passport = require("passport");
 const Razorpay = require("razorpay");
 const Product = require("./models/Products.js");
 const ExpressError = require("./utils/ExpressError.js");
-const wrapAsync = require("./utils/WrapAsync.js");
-
+const WrapAsync = require("./utils/WrapAsync.js");
+const crypto = require("crypto");//Used to create a secure HMAC hash to verify Razorpay's signature
+require('dotenv').config(); // Load variables from .env
+const {isUserLoggedIn,saveRedirectUrl} = require("./middleware.js");
 
 //routers
 const category = require("./routes/categories.js");
@@ -24,7 +27,8 @@ const reviews = require("./routes/reviews.js");
 const products = require("./routes/products.js");
 const users = require("./routes/user.js");
 const sellers = require("./routes/seller.js");
-const WrapAsync = require("./utils/WrapAsync.js");
+
+
 
 //mongoDB connection
 async function main() {
@@ -85,8 +89,8 @@ passport.deserializeUser(async ({ id, role }, done) => {
 
 //razorpay instance
 const razorpayInstance = new Razorpay({
-    key_id: "rzp_test_BxN4zyfawxKOr3",
-    key_secret: "v8VVhznJpGfoc8frEX3tViFO",
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
 //flash messages middleware
@@ -134,9 +138,8 @@ app.get("/search",WrapAsync(async(req,res)=>{
 }));
 
 //checkout
-app.get("/checkout",wrapAsync(async(req,res)=>{
+app.get("/checkout",isUserLoggedIn,WrapAsync(async(req,res)=>{
     let userId=req.user._id;
-
     let user=await User.findById(userId);
     let cart=await Cart.findOne({userId}).populate("items.productId");
 
@@ -148,7 +151,7 @@ app.get("/checkout",wrapAsync(async(req,res)=>{
 }));
 
 //razorpay
-app.post("/create-order", wrapAsync(async (req,res) => {
+app.post("/create-order", WrapAsync(async (req,res) => {
     const { totalAmount } = req.body; // Total amount from the request body
     try {
         const options = {
@@ -172,7 +175,48 @@ app.post("/create-order", wrapAsync(async (req,res) => {
         });
     }
 }));
-app.post("/pay",wrapAsync(async(req,res)=>{
+//to verify the payment
+app.post("/verify-payment",WrapAsync(async(req,res)=>{
+    const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;
+    const secret = process.env.RAZORPAY_KEY_SECRET;
+    const generated_signature = crypto
+    .createHmac("sha256", secret)
+    .update(razorpay_order_id + "|" + razorpay_payment_id)
+    .digest("hex");
+    if (generated_signature === razorpay_signature) {
+        let userId = req.user._id;
+        let cart = await Cart.findOne({userId}).populate("items.productId","_id price sellerId");
+        let order_items = [];
+        let total = 0;
+        for(let item of cart.items){
+            order_items.push({
+                "productId": item.productId._id,
+                "quantity":item.quantity,
+                "price":item.productId.price,
+                "sellerId":item.productId.sellerId,
+            })
+            total += item.quantity * item.productId.price;
+        }
+        let newOrder = new Order({
+            userId:userId,
+            items:order_items,
+            totalAmount:total,
+        })
+        cart.items = [];
+        await cart.save();
+        await newOrder.save()
+        // console.log(newOrder);
+        res.status(200).json({ success: true });
+    }
+}));
+
+//After successful payment
+app.get("/order-success",WrapAsync(async(req,res)=>{
+    req.flash("success","Order Placed successfully!");
+    res.redirect("/user/orders");
+}));
+
+app.post("/pay",WrapAsync(async(req,res)=>{
     res.status(200).send(req.body);
 }));
 

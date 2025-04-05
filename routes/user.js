@@ -3,6 +3,7 @@ const router = express.Router();
 const Products = require("../models/Products.js");
 const Cart=require("../models/Cart.js");
 const User = require("../models/Users.js");
+const Order = require("../models/Orders.js");
 const passport = require("passport");
 const {isUserLoggedIn,saveRedirectUrl} = require("../middleware.js");
 const WrapAsync = require("../utils/WrapAsync.js");
@@ -125,4 +126,16 @@ router.post("/cart/remove",isUserLoggedIn, WrapAsync(async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 }));
+router.get("/orders",isUserLoggedIn,WrapAsync(async(req,res)=>{
+    let userid = req.user._id;
+    let orders = await Order.find({userId:userid});
+    // console.log(orders);
+    // .populate("items.productId");
+    res.render("users/orders.ejs",{orders});
+}));
+router.get("/order/:id",isUserLoggedIn,WrapAsync(async(req,res)=>{
+    let {id} = req.params;
+    let order = await Order.findById(id).populate("items.productId");
+    res.render("users/order.ejs",{order});
+}))
 module.exports = router;

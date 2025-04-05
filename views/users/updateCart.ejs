@@ -22,12 +22,12 @@
                             <img src="<%= item.productId.images%>" onerror="this.onerror = null; this.src ='/resources/default.jpg';" width="50">
                             <%= item.productId.name %>
                         </td>
-                        <td>$<%= item.productId.price %></td>
+                        <td>&#8377;<%= item.productId.price %></td>
                         <td>
                             <input type="hidden" name="productId[]" value="<%= item.productId._id %>">
                             <input type="number" name="quantity[]" class="form-control quantity" value="<%= item.quantity %>" min="1" max="<%= item.productId.stock %>">
                         </td>
-                        <td class="subtotal">$<%= item.productId.price * item.quantity %></td>
+                        <td class="subtotal">&#8377;<%= item.productId.price * item.quantity %></td>
                         <td>
                             <button type="button" class="remove-btn btn mt-2" data-id="<%= item.productId._id %>">
                                 <i class="fas fa-times" style="color: white; font-size: 18px;"></i>

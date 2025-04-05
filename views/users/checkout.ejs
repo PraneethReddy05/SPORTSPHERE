@@ -57,9 +57,23 @@
                 order_id: result.orderId,
                 name: "SportSphere",
                 description: "Purchase from SportSphere",
-                handler: function (response) {
-                    alert(`Payment successful! Payment ID: ${response.razorpay_payment_id}`);
-                    window.location.href = "/order-success";
+                handler:async function (response) {
+                    // alert(`Payment successful! Payment ID: ${response.razorpay_payment_id}`);
+                    // window.location.href = "/order-success";
+                    const status = await fetch("/verify-payment", { //to verify weather the payment was done or not
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        credentials: "include",
+                        body: JSON.stringify(response),
+                    })
+                    const rstatus =await status.json();
+                    if (rstatus.success) {
+                        window.location.href = "/order-success";
+                    } else {
+                        alert("Payment verification failed");
+                    }
                 },
                 prefill: {
                     name: "<%= user.name %>",
