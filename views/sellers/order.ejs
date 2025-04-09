@@ -1,5 +1,6 @@
 <% layout("/layouts/boilerplate") -%>
 <div class="col-10 offset-1">
+<form action="/seller/order/<%= order._id %>" method="post">
 <table class="table mt-5 mb-5">
     <thead>
         <tr>
@@ -11,7 +12,9 @@
         </tr>
     </thead>
     <tbody>
-        <% order.items.forEach((item) => { %>
+        <% let index = 0 %>
+        <% for(let item of order.items){ %>
+        <% if(item.sellerId.toString() === sellerId.toString()){ %>
             <tr>
                 <td>
                     <img src="<%= item.productId.images%>" onerror="this.onerror = null; this.src ='/resources/default.jpg';" width="50">
@@ -19,24 +22,31 @@
                 </td>
                 <td>&#8377;<%= item.productId.price %></td>
                 <td><%= item.quantity %></td>
-                <!-- <td>
-                    <input type="hidden" name="productId[]" value="<%= item.productId._id %>">
-                    <input type="number" name="quantity[]" class="form-control quantity" value="<%= item.quantity %>" min="1" max="<%= item.productId.stock %>">
-                </td> -->
                 <td class="subtotal">&#8377;<%= item.productId.price * item.quantity %></td>
                 <% let color = "text-warning" %>
-                <% if(item.status == "delivered"){
-                    color = "text-success"
-                }else if(item.status == "shipped"){
+                <% if(item.status == "shipped"){
                     color = "text-primary"
                 }else if(item.status == "cancelled"){
                     color = "text-danger"
                 } %>
-                <td class="<%= color %>"><%= item.status %></td>
+                <td>
+                    <input type="hidden" name="items[<%= index %>][productId]" value="<%= item.productId._id %>">
+                    <select class="form-select" id="status" name="items[<%= index %>][status]" required>
+                        <option value="" disabled selected>Status</option>
+                        <option value="shipped">shipped</option>
+                        <option value="pending">pending</option>
+                    </select>
+                </td>
+                <% index = index + 1; %>
             </tr>
-        <% }) %>
+        <% } %>    
+        <% } %>
     </tbody>
 </table>
+<div class="d-flex justify-content-center">
+    <button type="submit" class="btn mt-2">Update order</button>
+</div>
+</form>
 </div>
 <div class="col-4 offset-4 mt-5 mb-5" style="border: 2px solid black;border-radius: 5px;">
     <div class="pt-4 pb-4 ps-4 pe-4">

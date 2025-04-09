@@ -24,3 +24,15 @@ module.exports.saveRedirectUrl = (req,res,next)=>{
     }
     next();
 }
+
+module.exports.updateOrderStatusIfUniform = async (order) => {
+    if (!order || !order.items || order.items.length === 0) return;
+    // Extract all item statuses
+    const statuses = order.items.map(item => item.status);
+    // Check if all statuses are the same
+    const allSame = statuses.every(status => status === statuses[0]);
+    if (allSame) {
+        order.status = statuses[0]; // Set the overall order status
+    }
+    return order;
+};

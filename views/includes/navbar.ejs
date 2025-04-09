@@ -15,6 +15,9 @@
             <% if(currUser){if(currUser.role == "Seller"){ %>
             <a class="nav-link" href="/seller/dashboard">Dashboard</a>
             <% }} %>
+            <% if(currUser){if(currUser.role == "Seller"){ %>
+            <a class="nav-link" href="/seller/orders">orders</a>
+            <% }} %>
             <% if(currUser){if(currUser.role == "User"){ %>
             <a class="nav-link" href="/user/orders">Orders</a>
             <% }} %>

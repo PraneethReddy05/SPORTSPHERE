@@ -16,7 +16,9 @@ const sellerSchema = new Schema({
       state: { type: String, required: true }
     },
     products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product', default:[] }], // References Product collection
-    role:{type: String,default:"Seller"}
+    orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order', default:[] }], // References Product collection
+    role:{type: String,default:"Seller"},
+    revenue:{type:Number,default: 0},
     // rating: { type: Number, default: 0 },
     // bankDetails: {
     //   accountNumber: { type: String },

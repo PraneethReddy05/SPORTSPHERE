@@ -185,7 +185,7 @@ app.post("/verify-payment",WrapAsync(async(req,res)=>{
     .digest("hex");
     if (generated_signature === razorpay_signature) {
         let userId = req.user._id;
-        let cart = await Cart.findOne({userId}).populate("items.productId","_id price sellerId");
+        let cart = await Cart.findOne({userId}).populate("items.productId");
         let order_items = [];
         let total = 0;
         for(let item of cart.items){
@@ -202,6 +202,13 @@ app.post("/verify-payment",WrapAsync(async(req,res)=>{
             items:order_items,
             totalAmount:total,
         })
+        let updatedSellers = new Set();
+        for(let item of cart.items){
+            let sellerId = item.productId.sellerId.toString();
+            if(updatedSellers.has(sellerId))continue;
+            let seller = await Seller.findByIdAndUpdate(item.productId.sellerId,{ $push: { orders: newOrder } });
+            updatedSellers.add(sellerId)
+        }
         cart.items = [];
         await cart.save();
         await newOrder.save()

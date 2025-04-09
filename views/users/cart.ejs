@@ -13,7 +13,11 @@
             <a href="/products/<%= product.productId._id%>" class="product-link">
             <img src="<%=product.productId.images%>" onerror="this.onerror = null; this.src ='/resources/default.jpg';" class="card-img-top" style="height: 20rem;" alt="">
             <div class="card-body border-top">
-                <h5 class="card-title" style="color: black;"><%=product.productId.name %></h5>
+                <% if(product.productId.name.length > 50){ %>
+                    <h5 class="card-title" style="color: black;"><%=product.productId.name.substring(0, 50 - 3) + "..."; %></h5>
+                <% }else{ %>
+                    <h5 class="card-title" style="color: black;"><%=product.productId.name %></h5>
+                <% } %>
                 <div class="card-text d-flex gap-5">
                     <p>&#8377;<%= product.productId.price %></p>
                     <p>Quantity: <%= product.quantity %></p>
