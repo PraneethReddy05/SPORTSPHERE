@@ -1,11 +1,11 @@
 <% layout("/layouts/boilerplate") -%>
     <div class="mt-5 text-center mb-5">
-        <h1>All Products</h1>
+        <h1>Your Products</h1>
     </div>
     <div class="col-12">
         <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 ms-3 mb-5 mt-5 d-flex justify-content-center gap-5">
-            <% for(let product of allProducts){ %>
-                <div class="card col mb-4 p-0" style="width: 18rem;height: 34rem;">
+            <% for(let product of seller.products){ %>
+                <div class="card col mb-4 p-0 d-flex flex-column" style="width: 18rem;height: 34rem;">
                     <a href="/products/<%= product._id%>" class="product-link">
                     <img src="<%=product.images%>" class="card-img-top" style="height: 20rem;width: 100%;" alt="">
                     <div class="card-body border-top">
@@ -13,6 +13,14 @@
                         <p class="card-text">&#8377;<%= product.price %></p>
                     </div>
                     </a>
+                    <div class="mt-auto w-100 px-3">
+                    <div class="buttons row mb-3">
+                        <a href="/products/<%= product._id%>/edit" class="btn col-3 offset-3">Edit</a>
+                        <form action="/products/<%= product._id%>?_method=DELETE" method="post" class="col-3">
+                            <button class="btn">Delete</button>
+                        </form>
+                    </div>
+                </div>
                 </div>
             <% } %>
         </div>

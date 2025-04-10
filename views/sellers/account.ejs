@@ -1,0 +1,73 @@
+<% layout("/layouts/boilerplate") -%>
+<div class="col-10 offset-1">
+    <div class="d-flex mt-5 mb-5 justify-content-between">
+        <div class="d-flex gap-1"><a class="nav-link" href="/home">Home</a>/<a class="nav-link" href="/seller/account">My Account</a></div>
+        <div>Welcome, <b><%= seller.name %></b></div>
+    </div>
+    <div class="d-flex mt-5 mb-5">
+        <div class="col-3">
+
+        </div>
+        <div class="col-7 profile-container">
+            <h3 class="text-center card-text">Edit Your Profile</h3>
+            <form action="/seller/account/update" method="post" class="needs-validation" novalidate>
+                <!-- <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" name="username" id="username" value="<%= seller.username %>" class="form-control">
+                    <div class="valid-feedback">Looks good!</div>
+                    <div class="invalid-feedback">Please enter valid username</div>
+                </div> -->
+                <div class="mb-3">
+                    <label for="name" class="form-label">Full Name</label>
+                    <input type="text" name="name" id="name" value="<%= seller.name %>"  class="form-control">
+                    <div class="valid-feedback">Looks good!</div>
+                    <div class="invalid-feedback">Please enter valid username</div>
+                </div>
+                <div class="mb-3">
+                    <label for="storeName" class="form-label">Store Name</label>
+                    <input type="text" name="storeName" id="storeName" value="<%= seller.storeName %>"  class="form-control" type="text" required>
+                    <div class="valid-feedback">Looks good!</div>
+                    <div class="invalid-feedback">Please enter valid username</div>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" name="email" id="email" value="<%= seller.email %>"  class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone number</label>
+                    <input type="text" name="phone" id="phone" value="<%= seller.phone %>"  class="form-control">
+                </div>
+                <div class="row">
+                    <div class="col-6 offset-5">
+                        <h4>Address</h4>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="street" class="form-label">Street</label>
+                    <input type="text" name="street" id="street" value="<%= seller.address.street %>" class="form-control">
+                </div>
+                <div class="row">
+                    <div class="mb-3 col-4">
+                        <label for="pincode" class="form-label">Pincode</label>
+                        <input type="text" name="pincode" id="pincode" value="<%= seller.address.pincode %>"  class="form-control">
+                    </div>
+                    <div class="mb-3 col-4">
+                        <label for="city" class="form-label">City</label>
+                        <input type="text" name="city" id="city" value="<%= seller.address.city %>"  class="form-control">
+                    </div>
+                    <div class="mb-3 col-4">
+                        <label for="state" class="form-label">State</label>
+                        <input type="text" name="state" id="state" value="<%= seller.address.state %>" class="form-control">
+                    </div>
+                </div>
+                <!-- <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" name="password" id="password"  class="form-control" required>
+                </div> -->
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-success">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

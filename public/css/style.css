@@ -211,3 +211,16 @@ footer{
     left: 0;
     z-index: 2;
 } */
+
+.profile-container {
+    border: 1px solid #e0e0e0; /* subtle light gray border */
+    border-radius: 12px;       /* smooth rounded corners */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* faint soft shadow */
+    background-color: #ffffff; /* white background */
+    padding: 24px;
+    transition: box-shadow 0.3s ease;
+}
+  
+.profile-container:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08); /* slightly deeper shadow on hover */
+}

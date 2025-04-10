@@ -1,0 +1,67 @@
+<% layout("/layouts/boilerplate") -%>
+<div class="col-10 offset-1">
+    <div class="d-flex mt-5 mb-5 justify-content-between">
+        <div class="d-flex gap-1"><a class="nav-link" href="/home">Home</a>/<a class="nav-link" href="/user/account">My Account</a></div>
+        <div>Welcome <%= user.name %></div>
+    </div>
+    <div class="d-flex mt-5 mb-5">
+        <div class="col-3">
+
+        </div>
+        <div class="col-7 profile-container">
+            <h3 class="text-center card-text">Edit Your Profile</h3>
+            <form action="/user/account/update" method="post" class="needs-validation" novalidate>
+                <!-- <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" name="username" id="username" value="<%= user.username %>" class="form-control">
+                    <div class="valid-feedback">Looks good!</div>
+                    <div class="invalid-feedback">Please enter valid username</div>
+                </div> -->
+                <div class="mb-3">
+                    <label for="name" class="form-label">Full Name</label>
+                    <input type="text" name="name" id="name" value="<%= user.name %>"  class="form-control">
+                    <div class="valid-feedback">Looks good!</div>
+                    <div class="invalid-feedback">Please enter valid username</div>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" name="email" id="email" value="<%= user.email %>"  class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone number</label>
+                    <input type="text" name="phone" id="phone" value="<%= user.phone %>"  class="form-control">
+                </div>
+                <div class="row">
+                    <div class="col-6 offset-5">
+                        <h4>Address</h4>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="street" class="form-label">Street</label>
+                    <input type="text" name="street" id="street" value="<%= user.address.street %>" class="form-control">
+                </div>
+                <div class="row">
+                    <div class="mb-3 col-4">
+                        <label for="pincode" class="form-label">Pincode</label>
+                        <input type="text" name="pincode" id="pincode" value="<%= user.address.pincode %>"  class="form-control">
+                    </div>
+                    <div class="mb-3 col-4">
+                        <label for="city" class="form-label">City</label>
+                        <input type="text" name="city" id="city" value="<%= user.address.city %>"  class="form-control">
+                    </div>
+                    <div class="mb-3 col-4">
+                        <label for="state" class="form-label">State</label>
+                        <input type="text" name="state" id="state" value="<%= user.address.state %>" class="form-control">
+                    </div>
+                </div>
+                <!-- <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" name="password" id="password"  class="form-control" required>
+                </div> -->
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-success">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

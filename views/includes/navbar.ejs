@@ -15,12 +15,6 @@
             <% if(currUser){if(currUser.role == "Seller"){ %>
             <a class="nav-link" href="/seller/dashboard">Dashboard</a>
             <% }} %>
-            <% if(currUser){if(currUser.role == "Seller"){ %>
-            <a class="nav-link" href="/seller/orders">orders</a>
-            <% }} %>
-            <% if(currUser){if(currUser.role == "User"){ %>
-            <a class="nav-link" href="/user/orders">Orders</a>
-            <% }} %>
             <!-- <a class="nav-link" href="/signup">Sign Up</a> -->
             <% if(!currUser) {%>
             <li class="nav-item dropdown">
@@ -46,13 +40,6 @@
           </div>
         </div>
       </div>
-      <% if(currUser){if(currUser.role == "Seller"){ %>
-        <div class="col">
-          <form action="/seller/product/new" method="get">
-            <button class="btn">Add Product</button>
-          </form>
-        </div>
-      <% }} %>
       <div class="col-2 me-3">
         <form action="/search" method="GET" class="search d-flex" role="search">
           <input class="form-control me-2" type="text" name="query" placeholder="Search" aria-label="Search">
@@ -71,8 +58,27 @@
             <i class="icons user fa-solid fa-user"></i>
           </a>
           <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#">Manage Account</a></li>
-            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+            <% if(currUser){if(currUser.role == "Seller"){ %>
+              <li class="d-flex justify-content-center align-items-center ms-3 me-3">
+                <i class="fa-regular fa-user"></i>
+                <a class="dropdown-item" href="/seller/account">Manage My Account</a>
+              </li>
+              <li class="d-flex justify-content-center align-items-center ms-3 me-3">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <a class="dropdown-item" href="/seller/orders">My Orders</a>
+              </li>
+            <% }} %>
+            <% if(currUser){if(currUser.role == "User"){ %>
+              <li class="d-flex justify-content-center align-items-center ms-3 me-3">
+                <i class="fa-regular fa-user"></i>
+                <a class="dropdown-item" href="/user/account">Manage My Account</a>
+              </li>
+              <li class="d-flex justify-content-center align-items-center ms-3 me-3">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <a class="dropdown-item" href="/user/orders">My Orders</a>
+              </li>
+            <% }} %>
+            <li class="d-flex justify-content-center align-items-center ms-3 me-3"><i class="fa-solid fa-arrow-right-from-bracket"></i><a class="dropdown-item" href="/logout">Logout</a></li>
           </ul>
         </li>
         <!-- <a href="/logout"><i class="icons user fa-solid fa-user"></i></a> -->

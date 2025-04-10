@@ -138,4 +138,30 @@ router.get("/order/:id",isUserLoggedIn,WrapAsync(async(req,res)=>{
     let order = await Order.findById(id).populate("items.productId");
     res.render("users/order.ejs",{order});
 }))
+
+//Account management
+router.get("/account",isUserLoggedIn,WrapAsync(async(req,res)=>{
+    let userId = req.user._id;
+    let user = await User.findById(userId);
+    res.render("users/account.ejs",{user});
+}));
+//Account details update
+router.post("/account/update",isUserLoggedIn,WrapAsync(async(req,res)=>{
+    let userId = req.user._id;
+    let { name, email, phone, street, pincode, city, state } = req.body;
+    let user = await User.findById(userId);
+    if(user){
+        user.name = name;
+        user.email = email;
+        user.phone = phone;
+        user.address.street = street;
+        user.address.pincode = pincode;
+        user.address.city = city;
+        user.address.state = state;
+    }
+    await user.save();
+    // console.log(user);
+    req.flash("success","Successfully Saved Changes.")
+    res.redirect("/home")
+}));
 module.exports = router;

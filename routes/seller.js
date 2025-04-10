@@ -61,7 +61,12 @@ router.get("/dashboard",isSellerLoggedIn, WrapAsync(async (req,res)=>{
     // console.log(seller);
     res.render("sellers/dashboard.ejs",{seller});
 }));
-
+//All seller products
+router.get("/products",isSellerLoggedIn,WrapAsync(async(req,res)=>{
+    let userId = req.user._id;
+    let seller = await Seller.findById(userId).populate("products");
+    res.render("sellers/products.ejs",{seller});
+}));
 //seller adding new product
 router.get("/product/new",isSellerLoggedIn,(req,res)=>{
     // let {id} = req.params;
@@ -112,5 +117,32 @@ router.post("/order/:id",isSellerLoggedIn,WrapAsync(async(req,res)=>{
     await updateOrderStatusIfUniform(order);
     await order.save();
     res.redirect("/seller/orders")
+}));
+
+//Account management
+router.get("/account",isSellerLoggedIn,WrapAsync(async(req,res)=>{
+    let userId = req.user._id;
+    let seller = await Seller.findById(userId);
+    res.render("sellers/account.ejs",{seller});
+}));
+//Account details update
+router.post("/account/update",isSellerLoggedIn,WrapAsync(async(req,res)=>{
+    let userId = req.user._id;
+    let { name,storeName,email, phone, street, pincode, city, state, password } = req.body;
+    let seller = await Seller.findById(userId);
+    if(seller){
+        seller.name = name;
+        seller.storeName = storeName;
+        seller.email = email;
+        seller.phone = phone;
+        seller.address.street = street;
+        seller.address.pincode = pincode;
+        seller.address.city = city;
+        seller.address.state = state;
+    }
+    await seller.save();
+    // console.log(user);
+    req.flash("success","Successfully Saved Changes.")
+    res.redirect("/home")
 }));
 module.exports = router;
