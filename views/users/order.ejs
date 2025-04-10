@@ -45,5 +45,11 @@
             <p>Subtotal:</p>
             <p>&#8377;<%= order.totalAmount %></p>
         </div>
+        <% if(order.status == "shipped"){ %>
+            <div class="d-flex justify-content-between pt-3 border-top">
+                <p>Order Confirmation:</p>
+                <a class="btn" href="/user/order/finish/<%= order._id %>">Received Order</a>
+            </div>
+        <% } %>
     </div>
 </div>

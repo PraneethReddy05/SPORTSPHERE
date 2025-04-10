@@ -3,6 +3,7 @@ const router = express.Router();
 const Products = require("../models/Products.js");
 const Cart=require("../models/Cart.js");
 const User = require("../models/Users.js");
+const Seller = require("../models/Seller.js");
 const Order = require("../models/Orders.js");
 const passport = require("passport");
 const {isUserLoggedIn,saveRedirectUrl} = require("../middleware.js");
@@ -137,6 +138,19 @@ router.get("/order/:id",isUserLoggedIn,WrapAsync(async(req,res)=>{
     let {id} = req.params;
     let order = await Order.findById(id).populate("items.productId");
     res.render("users/order.ejs",{order});
+}))
+router.get("/order/finish/:id",isUserLoggedIn,WrapAsync(async(req,res)=>{
+    let {id} = req.params;
+    let order = await Order.findById(id).populate("items.productId");
+    order.status = "delivered";
+    for(let item of order.items){
+        let seller = await Seller.findById(item.sellerId);
+        seller.revenue = seller.revenue + (item.quantity * item.price);
+        await seller.save();
+    }
+    order.save();
+    req.flash("success","Thank You!! do not forget to give review.");
+    res.redirect("/home");
 }))
 
 //Account management

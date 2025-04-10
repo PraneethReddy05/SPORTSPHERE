@@ -9,8 +9,17 @@
                     <a href="/products/<%= product._id%>" class="product-link">
                     <img src="<%=product.images%>" class="card-img-top" style="height: 20rem;width: 100%;" alt="">
                     <div class="card-body border-top">
-                        <h5 class="card-title text-black"><%=product.name %></h5>
+                        <% if(product.name.length > 50){ %>
+                            <h5 class="card-title" style="color: black;"><%=product.name.substring(0, 50 - 3) + "..."; %></h5>
+                        <% }else{ %>
+                            <h5 class="card-title" style="color: black;"><%=product.name %></h5>
+                        <% } %>
                         <p class="card-text">&#8377;<%= product.price %></p>
+                        <% if(product.stock > 0){ %>
+                            <div class="stock"><span class="text-success">In Stock: <%= product.stock %></span></div>
+                        <% }else{ %>
+                            <div class="stock"><span class="text-danger">Out Of Stock</span></div>
+                        <% } %>
                     </div>
                     </a>
                     <div class="mt-auto w-100 px-3">

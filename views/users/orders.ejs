@@ -4,31 +4,56 @@
 </div>
 <div class="col-10 offset-1">
     <div class="d-flex justify-content-center flex-column gap-3 mt-5 mb-5">
-        <% let cnt = 0 %>
         <% if(orders.length > 0) {%>
-        <% for(let order of orders){ %>
-            <% cnt = cnt+1 %>
-        <div class="card ps-2 pe-2" style="height: 6rem;">
-            <div class="card-body d-flex flex-row justify-content-between align-items-center">
-                <h2><%= cnt %></h2>
-                <% let color = "text-warning" %>
-                <% if(order.status == "delivered"){
-                    color = "text-success"
-                }else if(order.status == "shipped"){
-                    color = "text-primary"
-                }else if(order.status == "cancelled"){
-                    color = "text-danger"
-                } %>
-                <p><strong>Status : </strong><p class="<%= color %> fw-semibold"><%=order.status%></p></p>
-                <p><strong>Date : </strong><%=order.orderedAt%></p>
-                <p><strong>amount : </strong><%=order.totalAmount%></p>
-                <a href="/user/order/<%= order._id %>" class="btn btn-primary">view order</a>
+            <div class="profile-container d-flex justify-content-center flex-column gap-3">
+                <% let cnt = 0 %>
+                <% for(let order of orders){ %>
+                    <% if(order.status != "delivered"){ %>
+                        <% cnt = cnt+1 %>
+                        <div class="card ps-2 pe-2" style="height: 6rem;">
+                            <div class="card-body d-flex flex-row justify-content-between align-items-center">
+                                <h2><%= cnt %></h2>
+                                <% let color = "text-warning" %>
+                                <% if(order.status == "shipped"){
+                                    color = "text-primary"
+                                }else if(order.status == "cancelled"){
+                                    color = "text-danger"
+                                } %>
+                                <p><strong>Status : </strong><p class="<%= color %> fw-semibold"><%=order.status%></p></p>
+                                <p><strong>Date : </strong><%=order.orderedAt%></p>
+                                <p><strong>amount : </strong><%=order.totalAmount%></p>
+                                <a href="/user/order/<%= order._id %>" class="btn btn-primary">view order</a>
+                            </div>
+                        </div>
+                    <% } %>
+                <% } %>
+                <% if(cnt == 0){ %>
+                    <div class="text-center"><b>--No more pending orders--</b></div>
+                <% } %>
             </div>
-        </div>
-        <% } %>
+            <div class="profile-container d-flex justify-content-center flex-column gap-3">
+                <% let cnt2 = 0 %>
+                <% for(let order of orders){ %>
+                    <% if(order.status == "delivered"){ %>
+                        <% cnt2 = cnt2+1 %>
+                        <div class="card ps-2 pe-2" style="height: 6rem;">
+                            <div class="card-body d-flex flex-row justify-content-between align-items-center">
+                                <h2><%= cnt2 %></h2>
+                                <p><strong>Status : </strong><p class="text-success fw-semibold"><%=order.status%></p></p>
+                                <p><strong>Date : </strong><%=order.orderedAt%></p>
+                                <p><strong>amount : </strong><%=order.totalAmount%></p>
+                                <a href="/user/order/<%= order._id %>" class="btn btn-primary">view order</a>
+                            </div>
+                        </div>
+                    <% } %>
+                <% } %>
+                <% if(cnt2 == 0){ %>
+                    <p>No completed orders yet!</p>
+                <% } %>
+            </div>
         <% }else{ %>
             <div class="d-flex justify-content-center">
-                <h2 class="text-center card-text">You have no orders!!</h2>
+                <div class="text-center"><b>--You have no completed orders!!--</b></div>
             </div>
         <% } %>
     </div>

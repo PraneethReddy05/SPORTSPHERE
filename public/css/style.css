@@ -81,7 +81,10 @@ footer{
     font-weight: 600;
     font-size: larger;
 }
-
+.stock{
+    font-weight: 600;
+    font-size: larger;
+}
 /* home.ejs */
 
 .categories {

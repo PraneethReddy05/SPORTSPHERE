@@ -30,9 +30,11 @@
                     <div class="card col mb-4" style="width: 18rem;height: 30rem;">
                       <img src="<%=product.images%>" class="card-img-top" style="height: 20rem;" alt="">
                       <div class="card-body border-top">
-                        <h5 class="card-title">
-                          <%=product.name %>
-                        </h5>
+                        <% if(product.name.length > 50){ %>
+                          <h5 class="card-title" style="color: black;"><%=product.name.substring(0, 50 - 3) + "..."; %></h5>
+                        <% }else{ %>
+                          <h5 class="card-title" style="color: black;"><%=product.name %></h5>
+                        <% } %>
                         <p class="card-text">
                           &#8377;<%= product.price %>
                         </p>
