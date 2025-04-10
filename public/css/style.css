@@ -227,3 +227,9 @@ footer{
 .profile-container:hover {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08); /* slightly deeper shadow on hover */
 }
+.cimg{
+    width: 100%;
+    height: auto;
+    object-fit: cover; /* or 'cover' based on need */
+    image-rendering: auto; /* smooth scaling */
+  }

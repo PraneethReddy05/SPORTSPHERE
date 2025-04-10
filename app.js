@@ -42,6 +42,7 @@ main().then(() => {
 
 //middlewares
 app.set("view engine", "ejs");
+app.use(express.static('public'));
 app.set("views", path.join(__dirname, "views"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -117,12 +118,12 @@ app.get("/home",WrapAsync(async(req, res) => {
 
 //contact
 app.get("/contact", (req, res) => {
-    res.send("Contact page");
+    res.render("contact.ejs");
 })
 
 //about us
 app.get("/about", (req, res) => {
-    res.send("About us page");
+    res.render("about.ejs");
 })
 
 app.get("/search",WrapAsync(async(req,res)=>{
